@@ -58,7 +58,7 @@ namespace Music_Player
                     DBConnection.Close();
                 }
             }
-            catch(Exception e)
+            catch (SQLiteException e)
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
@@ -78,7 +78,7 @@ namespace Music_Player
                     DBConnection.Close();
                 }
             }
-            catch (Exception e)
+            catch (SQLiteException e)
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
