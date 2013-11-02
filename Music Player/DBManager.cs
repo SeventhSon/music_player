@@ -12,21 +12,22 @@ namespace Music_Player
     public sealed class DBManager
     {
         private static volatile DBManager instance;
-        private static object monitor = new Object();
+        private static object Monitor = new Object();
         private static string DBConnectionLink;
         private DBManager()
         {
-            string dbfile = AppDomain.CurrentDomain.BaseDirectory +"\\library.sqlite";
-            Console.WriteLine(dbfile);
-            if(!File.Exists(dbfile))
+            string DBFile = AppDomain.CurrentDomain.BaseDirectory +"\\DB\\musiclibrary.sqlite";
+            Console.WriteLine(DBFile);
+            if(!File.Exists(DBFile))
             {
-                Console.WriteLine("Database not present!");
-                throw new Exception("Database file missing!");
+                Console.WriteLine("DB is nonexistent. Creating DB from sql!");
+                SQLiteConnection.CreateFile(AppDomain.CurrentDomain.BaseDirectory + "\\DB\\musiclibrary.sqlite");
+                DBConnectionLink = "Data Source="+DBFile+";Version=3;";
+                int ra = ExecuteScript(AppDomain.CurrentDomain.BaseDirectory+"\\DB\\musicplayer.sql");
+                if (ra == -1)
+                    throw new SQLiteException("Couldnt execute DDL script!");
             }
-            else
-            {
-                DBConnectionLink = "Data Source=" + dbfile;
-            }
+            DBConnectionLink = "Data Source=" + DBFile;
         }
         public static DBManager Instance
         {
@@ -34,7 +35,7 @@ namespace Music_Player
             {
                 if(instance == null)
                 {
-                    lock(monitor)
+                    lock(Monitor)
                     {
                         if (instance == null)
                             instance = new DBManager();
@@ -67,14 +68,14 @@ namespace Music_Player
         }
         public int executeNonQuery(string SQL)
         {
-            int rowsAffected = -1;
+            int RowsAffected = -1;
             try
             {
                 using (SQLiteConnection DBConnection = new SQLiteConnection(DBConnectionLink))
                 {
                     DBConnection.Open();
-                    SQLiteCommand query = new SQLiteCommand(SQL, DBConnection);
-                    rowsAffected = query.ExecuteNonQuery();
+                    SQLiteCommand Query = new SQLiteCommand(SQL, DBConnection);
+                    RowsAffected = Query.ExecuteNonQuery();
                     DBConnection.Close();
                 }
             }
@@ -83,7 +84,41 @@ namespace Music_Player
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
             }
-            return rowsAffected;
+            return RowsAffected;
+        }
+        public int ExecuteScript(string path)
+        {
+            int RowsAffected = 0;
+
+            try
+            {
+                string[] script = File.ReadAllText(path).Split(';');
+                using (SQLiteConnection DBConnection = new SQLiteConnection(DBConnectionLink))
+                {
+                    DBConnection.Open();
+                    foreach (string Line in script)
+                    {
+                        try
+                        {
+                            SQLiteCommand Query = new SQLiteCommand(Line, DBConnection);
+                            RowsAffected += Query.ExecuteNonQuery();
+                        }
+                        catch (SQLiteException e)
+                        {
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine(e.StackTrace);
+                        }
+                    }
+                    DBConnection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.GetType().ToString());
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            return RowsAffected;
         }
         public static void reset()
         {
