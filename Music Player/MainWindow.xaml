@@ -16,7 +16,7 @@
             <Button.Template>
                 <ControlTemplate>
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Image Source="prev.png" 
+                        <Image Source="Images\prev.png" 
                                Width="30" 
                                Height="30"/>
                     </Border>
@@ -28,7 +28,7 @@
             <Button.Template>
                 <ControlTemplate>
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Image Source="Play2.jpg" 
+                        <Image Source="Images\Play2.jpg" 
                                Width="30" 
                                Height="30"/>
                     </Border>
@@ -39,7 +39,7 @@
             <Button.Template>
                 <ControlTemplate>
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <Image Source="next.png" 
+                        <Image Source="Images\next.png" 
                                Width="30" 
                                Height="30"/>
                     </Border>
