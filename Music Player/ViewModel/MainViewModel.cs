@@ -1,5 +1,6 @@
 using GalaSoft.MvvmLight;
-
+using System.Data;
+using System.Windows;
 namespace Music_Player.ViewModel
 {
     /// <summary>
@@ -14,11 +15,17 @@ namespace Music_Player.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase 
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
+        /// 
+        private string nowPlayingTrack = "Select a track to play";
+        private string nowPlayingArtist = "Not playing";
+        private bool isPlaying = true;
+        private DataView results = new DataView();
+        private int volume = 100;
         public MainViewModel()
         {
             ////if (IsInDesignMode)
@@ -29,6 +36,68 @@ namespace Music_Player.ViewModel
             ////{
             ////    // Code runs "for real"
             ////}
+        }
+        public string NowPlayingTrack
+        {
+            get 
+            {
+                return nowPlayingTrack;
+            }
+            set 
+            {
+                nowPlayingTrack = value;
+                RaisePropertyChanged("NowPlayingTrack");
+            }
+        }
+        public string NowPlayingArtist
+        {
+            get
+            {
+                return nowPlayingArtist;
+            }
+            set
+            {
+                nowPlayingArtist = value;
+                RaisePropertyChanged("NowPlayingArtist");
+            }
+        }
+        public bool IsPlaying
+        {
+            get
+            {
+                return isPlaying;
+            }
+            set
+            {
+                isPlaying = value;
+                RaisePropertyChanged("IsPlaying");
+            }
+        }
+        public DataView Results
+        {
+            get
+            {
+                return results;
+            }
+            set
+            {
+                if (results == value)
+                    return;
+                results = value;
+                RaisePropertyChanged("Results");
+            }
+        }
+        public int Volume
+        {
+            get
+            {
+                return volume;
+            }
+            set
+            {
+                volume = value;
+                RaisePropertyChanged("Volume");
+            }
         }
     }
 }
