@@ -204,7 +204,7 @@
 							<VisualStateManager.CustomVisualStateManager>
 								<ei:ExtendedVisualStateManager/>
 							</VisualStateManager.CustomVisualStateManager>
-							<Rectangle x:Name="rectangle" Fill="#FFEBECF5" HorizontalAlignment="Left" Height="50" RadiusY="64" RadiusX="68" Stroke="#FFADB4FF" VerticalAlignment="Top" Width="50" StrokeThickness="2"/>
+							<Rectangle x:Name="rectangle" Fill="White" HorizontalAlignment="Left" Height="50" RadiusY="64" RadiusX="68" Stroke="#FFADB4FF" VerticalAlignment="Top" Width="50" StrokeThickness="2"/>
 							<ed:RegularPolygon x:Name="regularPolygon" Fill="#FF7E7EFF" HorizontalAlignment="Left" Height="23.5" InnerRadius="1" Margin="13.5,13.5,0,0" PointCount="3" Stretch="Fill" Stroke="#FF7E7EFF" StrokeThickness="3" VerticalAlignment="Top" Width="30" RenderTransformOrigin="0.5,0.5">
 								<ed:RegularPolygon.RenderTransform>
 									<TransformGroup>
@@ -857,6 +857,49 @@
 				<Rectangle Fill="White" HorizontalAlignment="Left" Height="10.126" RadiusY="43" VerticalAlignment="Bottom" Width="10.25" RadiusX="43" Margin="0,0,0,-0.438" Stroke="#FF7E7EFF" StrokeThickness="2"/>
 			</Grid>
 		</ControlTemplate>
+		<DataTemplate x:Key="ItemTemplate">
+			<StackPanel VerticalAlignment="Stretch">
+				<TextBlock Text="{Binding Property1}" VerticalAlignment="Stretch" FontFamily="Tw Cen MT" FontSize="18.667" FontWeight="Bold" Foreground="#FF7E7EFF" Margin="29,10,16,10"/>
+			</StackPanel>
+		</DataTemplate>
+		<Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+			<Setter Property="Padding" Value="2,0,0,0"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ListBoxItem}">
+						<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsSelected" Value="true">
+								<Setter Property="Background" TargetName="Bd" Value="White"/>
+								<Setter Property="Foreground" Value="#FF7E7EFF"/>
+								<Setter Property="FontFamily" Value="Tw Cen MT"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+								<Setter Property="FontSize" Value="21.333"/>
+								<Setter Property="HorizontalAlignment" Value="Stretch"/>
+								<Setter Property="Margin" Value="0"/>
+							</Trigger>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsSelected" Value="true"/>
+									<Condition Property="Selector.IsSelectionActive" Value="false"/>
+								</MultiTrigger.Conditions>
+								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}"/>
+								<Setter Property="Background" Value="White"/>
+								<Setter Property="Background" TargetName="Bd" Value="White"/>
+							</MultiTrigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
@@ -867,32 +910,36 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="165" />
 			<ColumnDefinition MinWidth="100" />
-			<ColumnDefinition Width="98" />
-			<ColumnDefinition Width="93"/>
+			<ColumnDefinition Width="97" />
 		</Grid.ColumnDefinitions>
-		<Rectangle Grid.ColumnSpan="4" Margin="0" RadiusY="40" Grid.Row="1" Stroke="#FFADB4FF" Grid.RowSpan="2">
+		<Rectangle Grid.ColumnSpan="3" Margin="0" RadiusY="40" Grid.Row="1" Stroke="#FFADB4FF" Grid.RowSpan="2" Fill="White"/>
+		<Rectangle Grid.ColumnSpan="3" Margin="0" RadiusY="40" Stroke="#FFADB4FF" Fill="White"/>
+		<Rectangle Grid.ColumnSpan="2" RadiusY="40" Grid.Row="1" Grid.Column="1">
 			<Rectangle.Fill>
 				<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-					<GradientStop Color="#FFEBECF5" Offset="1"/>
-					<GradientStop Color="White"/>
+					<GradientStop Offset="1"/>
+					<GradientStop Color="#FFADB4FF"/>
 				</LinearGradientBrush>
 			</Rectangle.Fill>
 		</Rectangle>
-		<Rectangle Grid.ColumnSpan="4" Margin="0" RadiusY="40" Stroke="#FFADB4FF" Fill="White"/>
-		<Button x:Name="NextBtn" Content="Button" HorizontalAlignment="Left" Margin="120,20,0,0" Width="40" RenderTransformOrigin="0.083,0.15" Style="{DynamicResource PlayBtnStyle}" Height="40" VerticalAlignment="Top"/>
-		<ToggleButton x:Name="PlayPauseTgBtn" Content="ToggleButton" HorizontalAlignment="Left" Margin="65,15,0,0" VerticalAlignment="Top" Width="50" Height="50" Style="{DynamicResource PlayPauseBtnStyle}"/>
-		<Button x:Name="PrevBtn" Content="Button" HorizontalAlignment="Left" Margin="52.75,47.75,0,0" Width="40" RenderTransformOrigin="0.083,0.15" Style="{DynamicResource PlayBtnStyle}" Height="40" VerticalAlignment="Top" Grid.RowSpan="2">
+		<Button x:Name="NextBtn" Content="Button" HorizontalAlignment="Right" Margin="0,17.667,10,17.333" Width="40" RenderTransformOrigin="0.083,0.15" Style="{DynamicResource PlayBtnStyle}"/>
+		<ToggleButton x:Name="PlayPauseTgBtn" Content="ToggleButton" HorizontalAlignment="Center" Margin="57.667,11.833,57.333,13.167" VerticalAlignment="Center" Width="50" Height="50" Style="{DynamicResource PlayPauseBtnStyle}" RenderTransformOrigin="0.5,0.49"/>
+		<Button x:Name="PrevBtn" Content="Button" HorizontalAlignment="Left" Margin="10,17.542,0,17.458" Width="40" RenderTransformOrigin="0.083,0.15" Style="{DynamicResource PlayBtnStyle}">
 			<Button.RenderTransform>
 				<TransformGroup>
 					<ScaleTransform/>
 					<SkewTransform/>
 					<RotateTransform Angle="180"/>
-					<TranslateTransform/>
+					<TranslateTransform X="33.5" Y="28"/>
 				</TransformGroup>
 			</Button.RenderTransform>
 		</Button>
-		<DataGrid x:Name="SongGrid" Grid.Column="1" Margin="10" Grid.Row="2" Grid.ColumnSpan="3" Background="White" BorderBrush="#FF7E7EFF" AlternatingRowBackground="#FFB2B9FE" RowBackground="#FFEBECF5"/>
-		<Slider x:Name="TimeSlider" Grid.Column="1" Margin="10,33.333,10,25" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Maximum="100">
+		<DataGrid x:Name="SongGrid" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Background="White" BorderBrush="{x:Null}" AlternatingRowBackground="#FFB2B9FE" RowBackground="#FFEBECF5"/>
+		<Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="18.75" Margin="54.75,46.25,0,0" RadiusY="40" VerticalAlignment="Top" Width="17.25"/>
+		<Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="6.667" Margin="10,58.333,0,0" RadiusY="40" VerticalAlignment="Top" Width="15"/>
+		<Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="9.25" Margin="25,55.75,0,0" RadiusY="40" VerticalAlignment="Top" Width="15"/>
+		<Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="13.25" Margin="40,51.75,0,0" RadiusY="40" VerticalAlignment="Top" Width="15.021"/>
+		<Slider x:Name="TimeSlider" Grid.Column="1" Margin="10,58.333,10,0" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Maximum="100">
 			<Slider.Background>
 				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 					<GradientStop Color="White" Offset="0"/>
@@ -906,7 +953,7 @@
 				</LinearGradientBrush>
 			</Slider.BorderBrush>
 		</Slider>
-		<Slider x:Name="VolumeSlider" Grid.Column="2" Margin="10,33.333,11.833,26.5" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Value="100" Maximum="100">
+		<Slider x:Name="VolumeSlider" Grid.Column="2" Margin="10,58.333,25,1.5" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Value="100" Maximum="100" RenderTransformOrigin="0.486,0.44">
 			<Slider.Background>
 				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 					<GradientStop Color="White" Offset="0"/>
@@ -928,5 +975,12 @@
 				</LinearGradientBrush>
 			</Rectangle.Fill>
 		</Rectangle>
+		<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="17.167" Margin="19,11.833,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Foreground="#FF7E7EFF" FontFamily="Tw Cen MT Condensed" FontSize="16"><Run Language="pl-pl" Text="Performing artist"/></TextBlock>
+		<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.833" Margin="19,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="485" Foreground="#FF7E7EFF" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667"><Run Language="pl-pl" Text="Title of the track"/></TextBlock>
+		<ListBox HorizontalAlignment="Left" Height="445" Grid.Row="1" VerticalAlignment="Top" Width="165" Grid.RowSpan="2" Background="#00000000" BorderBrush="{x:Null}">
+			<ListBoxItem Content="Now Playing" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
+			<ListBoxItem IsSelected="True" Content="Library" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
+			<ListBoxItem Content="Settings" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
+		</ListBox>
 	</Grid>
 </Window>
