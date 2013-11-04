@@ -15,7 +15,6 @@ namespace Music_Player
         public LibraryManager()
         {
             RescanLibrary();
-            Messenger.Default.Send<string, MainViewModel>("ReloadLibrary");
         }
         public DataTable GetSongs()
         {
@@ -36,41 +35,44 @@ namespace Music_Player
         public void AddSongs(DataTable songs)
         {
             string insertString = "";
-            foreach(DataRow row in songs.Rows)
-            { 
+            for (int i = 0; i < songs.Rows.Count; i++)
+            {
+                DataRow row = songs.Rows[i];
                 string title = row["Title"].ToString();
                 string artist = row["Artist"].ToString();
                 string album = row["Album"].ToString();
                 string genre = row["Genre"].ToString();
-                string lenght = row["Lenght"].ToString();
+                string lenght = row["Length"].ToString();
+                string path = row["Path"].ToString();
                 string directoryid = row["DirectoryID"].ToString();
-                insertString += "(" + title + "," + artist + "," + album + "," + genre + "," + lenght + "," + directoryid + ")";
+                insertString += "(\"" + title + "\",\"" + artist + "\",\"" + album + "\",\"" + genre + "\"," + lenght + ",\"" + path + "\"," + directoryid + ")";
+                if (i != songs.Rows.Count - 1)
+                    insertString += ",";
             }
             DBManager dbm = DBManager.Instance;
-            dbm.executeNonQuery("Insert or ignore into songs (title,artist,album,genre,length,directoryid) values " + insertString);
+            dbm.executeNonQuery("Insert or ignore into songs (title,artist,album,genre,length,path,id_directory) values " + insertString);
+            Messenger.Default.Send<string, MainViewModel>("ReloadLibrary");
         }
-        private int RescanLibrary()
+        private void RescanLibrary()
         {
-            int scannedItems = 0;
             DataTable dirs = GetDirectories();
             foreach(DataRow row in dirs.Rows)
             {
                 string dirId = row["ID"].ToString();
                 string path = row["Path"].ToString();
-                long lastWriteTime = (long)row["last_write_time"];
+                long lastWriteTime = (long)row["LastWriteTime"];
                 try
                 {
-                    if(lastWriteTime == File.GetLastWriteTime(path).ToFileTime())
+                    if(lastWriteTime < File.GetLastWriteTime(path).ToFileTime())
                     {
                         DirectoryScanner ds = DirectoryScanner.Instance;
-                        AddSongs(ds.ScanRecursive(path));
+                        AddSongs(ds.Scan(path));
                     }
                 }catch(Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
-            return scannedItems; 
         }
     }
 }

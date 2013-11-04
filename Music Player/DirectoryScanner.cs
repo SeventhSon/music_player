@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections.ObjectModel;
-
+using System.Data;
 namespace Music_Player
 {
     class DirectoryScanner
@@ -15,27 +15,13 @@ namespace Music_Player
         private Collection <FileSystemWatcher> FSW;
         private DirectoryScanner()
         {
-            //Create a new FileSystemWatcher.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-
-            //Set the filter to only catch TXT files.
-            watcher.Filter = "*.mp3";
-
-            //Subscribe to the Created event.
-            watcher.Created += new FileSystemEventHandler(watcher_FileCreated);
-
-            //Set the path
-            //////////////////////////some problems here
-            //watcher.Path = path;
-
-            //Enable the FileSystemWatcher events.
-            watcher.EnableRaisingEvents = true;
+            FSW = new Collection<FileSystemWatcher>();
         }
 
         void watcher_FileCreated(object sender, FileSystemEventArgs e)
         {
             //scanning path again
-
+            
         }
         public static DirectoryScanner Instance
         {
@@ -52,59 +38,80 @@ namespace Music_Player
                 return instance;
             }
         }
-        public int Scan(string path)
+        public DataTable Scan(string path)
         {
-            int MusicFilesFound = 0;
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Title", typeof(string));
+            dt.Columns.Add("Artist", typeof(string));
+            dt.Columns.Add("Album", typeof(string));
+            dt.Columns.Add("Genre", typeof(string));
+            dt.Columns.Add("Length", typeof(int));
+            dt.Columns.Add("DirectoryID", typeof(int));
+            dt.Columns.Add("Path", typeof(string));
             DirectoryInfo DI = new DirectoryInfo(path);
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
+            DBManager dbm = DBManager.Instance;
+            dbm.executeNonQuery("Insert or ignore into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+            int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             foreach (FileInfo file in DI.GetFiles())
             {
                 if(file.Extension == ".mp3")
                 {
-                    MusicFilesFound++;
-                    //adding file do database
+                    TagLib.File tags = TagLib.File.Create(file.FullName);
+                    dt.Rows.Add(tags.Tag.Title, ConvertStringArrayToString(tags.Tag.AlbumArtists), tags.Tag.Album, ConvertStringArrayToString(tags.Tag.Genres), tags.Properties.Duration.TotalSeconds, dirid,file.FullName);
                 }
             }
-            //After scanning add directory to FileSystemWatcher
-            return MusicFilesFound;
+            return dt;
         }
-        public int ScanRecursive(string path)
+        public DataTable ScanRecursive(string path, DataTable dt)
         {
-            int MusicFilesFound = 0;
+            if(dt == null)
+            {
+                dt = new DataTable();
+                dt.Columns.Add("Title", typeof(string));
+                dt.Columns.Add("Artist", typeof(string));
+                dt.Columns.Add("Album", typeof(string));
+                dt.Columns.Add("Genre", typeof(string));
+                dt.Columns.Add("Length", typeof(int));
+                dt.Columns.Add("DirectoryID", typeof(int));
+                dt.Columns.Add("Path", typeof(string));
+            }
             DirectoryInfo DI = new DirectoryInfo(path);
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
+            DBManager dbm = DBManager.Instance;
+            dbm.executeNonQuery("Insert or ignore into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+            int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             foreach (FileInfo file in DI.GetFiles())
             {
-                if (file.Extension == ".mp3")
+                if(file.Extension == ".mp3")
                 {
-                    MusicFilesFound++;
-                    //adding file to database
+                    TagLib.File tags = TagLib.File.Create(file.FullName);
+                    dt.Rows.Add(tags.Tag.Title, ConvertStringArrayToString(tags.Tag.AlbumArtists), tags.Tag.Album, ConvertStringArrayToString(tags.Tag.Genres), tags.Properties.Duration.TotalSeconds, dirid,file.FullName);
                 }
             }
             DirectoryInfo[] subDirectories = DI.GetDirectories();
 
             foreach (DirectoryInfo subDirectory in subDirectories)
+                ScanRecursive(subDirectory.FullName,dt);
+            return dt;
+        }
+        static string ConvertStringArrayToString(string[] array)
+        {
+            //
+            // Concatenate all the elements into a StringBuilder.
+            //
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < array.Length; i++)
             {
-                watcher.Path = subDirectory.FullName;
-                FSW.Add(watcher);
-                ScanRecursive(subDirectory.FullName);
+                builder.Append(array[i]);
+                if(i!=array.Length-1)
+                    builder.Append(',');
             }
-            //After scanning add all directories to FileSystemWatcher
-            return MusicFilesFound;
-        }
-        public int GetLastWriteTime(string path)
-        {
-            int LastWriteTime = -1;
-            return LastWriteTime;
-        }
-        private static void OnFileChange()
-        {
-            //On change use DBManager to send infromation
-            //Later notify LibraryManager to refresh
+            return builder.ToString();
         }
     }
 }

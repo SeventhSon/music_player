@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Data;
 using System.Data.SQLite;
+using System.Windows;
 
 namespace Music_Player
 {
@@ -61,8 +62,7 @@ namespace Music_Player
             }
             catch (SQLiteException e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                MessageBox.Show(e.Message+"\n"+e.StackTrace+"\n"+SQL);
             }
             return dt;
         }
@@ -81,8 +81,8 @@ namespace Music_Player
             }
             catch (SQLiteException e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL");
+                Console.WriteLine(SQL);
             }
             return RowsAffected;
         }
@@ -114,9 +114,7 @@ namespace Music_Player
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.GetType().ToString());
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n" + e.GetType());
             }
             return RowsAffected;
         }

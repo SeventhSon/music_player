@@ -952,7 +952,7 @@
         </Button>
         <DataGrid x:Name="SongGrid" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Background="White" BorderBrush="{x:Null}" AlternatingRowBackground="White" RowBackground="#FFEBECF5" ItemsSource="{Binding Path=Results,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontFamily="Tw Cen MT" GridLinesVisibility="None" BorderThickness="0" Foreground="#FF7E7EFF" MinColumnWidth="60" RowHeight="25" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" FontSize="14" IsReadOnly="True">
             <DataGrid.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding PlayCommand}" CommandParameter="{Binding ElementName=SongGrid, Path=SelectedItem}" />
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding PlayCommand}" CommandParameter="{Binding ElementName=SongGrid, Path=SelectedIndex}" />
             </DataGrid.InputBindings>
         </DataGrid>
         <Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="18.75" Margin="54.75,46.25,0,0" RadiusY="40" VerticalAlignment="Top" Width="17.25"/>
@@ -1000,7 +1000,11 @@
         <ListBox HorizontalAlignment="Left" Height="445" Grid.Row="1" VerticalAlignment="Top" Width="165" Grid.RowSpan="2" Background="#00000000" BorderBrush="{x:Null}">
             <ListBoxItem Content="Now Playing" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
             <ListBoxItem IsSelected="True" Content="Library" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
-            <ListBoxItem Content="Settings" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36"/>
+            <ListBoxItem Content="Add" Style="{DynamicResource ListBoxItemStyle1}" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="21.333" Foreground="#FF7E7EFF" Height="36">
+                <ListBoxItem.InputBindings>
+                    <MouseBinding Gesture="LeftClick"  Command="{Binding AddCommand}" />
+                </ListBoxItem.InputBindings>
+            </ListBoxItem>
         </ListBox>
         <TextBlock x:Name="TimeTB" TextAlignment="Right" Grid.Column="1" Height="29" Margin="0,33,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#FF7E7EFF" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667" HorizontalAlignment="Right" Width="79"><Run Language="pl-pl" Text="{Binding Path=TimeEllapsed, Converter={StaticResource IntToTimeConverter},Mode=OneWay}"/></TextBlock>
     </Grid>
