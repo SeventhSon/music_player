@@ -3,6 +3,8 @@ using GalaSoft.MvvmLight.Command;
 using System.Data;
 using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
+using System.Windows.Threading;
+using System;
 
 namespace Music_Player.ViewModel
 {
@@ -40,6 +42,7 @@ namespace Music_Player.ViewModel
         private int volume = 100;
         private int percentagePlayed = 0;
         private int timeEllapsed = 0;
+        private DispatcherTimer timer;
         public MainViewModel()
         {
             PlayCommand = new RelayCommand(() => UpdateNowPlaying());
@@ -49,6 +52,15 @@ namespace Music_Player.ViewModel
             libraryManagerModel = new LibraryManager();
 
             Results = libraryManagerModel.GetSongs().AsDataView();
+            timer = new DispatcherTimer();
+            timer.Tick += dispatcherTimer_Tick;
+            timer.Interval = new TimeSpan(0, 0, 1);
+        }
+
+        private void dispatcherTimer_Tick(object sender, System.EventArgs e)
+        {
+            TimeEllapsed += 1;
+            PercentagePlayed = TimeEllapsed / nowPlayingLenght;
         }
         private void OnStringMessageReceived(string msg)
         {
@@ -59,21 +71,21 @@ namespace Music_Player.ViewModel
             }else if (msg.Equals("ChangedTrack"))
             {
                 NowPlayingIndex = musicPlayerModel.Index;
-
-                NowPlayingArtist = musicPlayerModel.Artist;
-                NowPlayingTrack = row["Title"].ToString();
-                nowPlayingLenght = (int)row["Time"];
             }
         }
 
-        private void UpdateNowPlaying()
+        private void UpdateNowPlaying(int selectedIndex)
         {
-            DataRow row = songs.Rows[NowPlayingIndex];
-            NowPlayingArtist = row["Artist"].ToString();
-            NowPlayingTrack = row["Title"].ToString();
-            nowPlayingLenght = (int)row["Time"];
+            NowPlayingIndex = selectedIndex;
+            musicPlayerModel.Index = NowPlayingIndex;
+            musicPlayerModel.Queue = songs;
         }
         public RelayCommand PlayCommand
+        {
+            get;
+            private set;
+        }
+        public RelayCommand AddFolder
         {
             get;
             private set;
@@ -90,6 +102,10 @@ namespace Music_Player.ViewModel
                     return;
                 nowPlayingIndex = value;
                 RaisePropertyChanged("NowPlayingIndex");
+                DataTable Queue = musicPlayerModel.Queue;
+                NowPlayingArtist = Queue.Rows[NowPlayingIndex]["Artist"].ToString();
+                NowPlayingTrack = Queue.Rows[NowPlayingIndex]["Title"].ToString();
+                nowPlayingLenght = (int)Queue.Rows[NowPlayingIndex]["Time"];
             }
         }
         public string NowPlayingTrack
@@ -132,6 +148,11 @@ namespace Music_Player.ViewModel
                     return;
                 isPlaying = value;
                 RaisePropertyChanged("IsPlaying");
+                timer.Start();
+                if (isPlaying)
+                    musicPlayerModel.Play();
+                else
+                    musicPlayerModel.Pause();
             }
         }
         public DataView Results
@@ -159,6 +180,7 @@ namespace Music_Player.ViewModel
                 if (volume == value)
                     return;
                 volume = value;
+                musicPlayerModel.changeVolume(volume);
                 RaisePropertyChanged("Volume");
             }
         }

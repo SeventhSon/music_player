@@ -33,7 +33,7 @@ namespace Music_Player
             DBManager dbm = DBManager.Instance;
             return dbm.executeQuery("Select title as Title from directories");
         }
-        private void AddSongs(DataTable songs)
+        public void AddSongs(DataTable songs)
         {
             string insertString = "";
             foreach(DataRow row in songs.Rows)
@@ -63,7 +63,7 @@ namespace Music_Player
                     if(lastWriteTime == File.GetLastWriteTime(path).ToFileTime())
                     {
                         DirectoryScanner ds = DirectoryScanner.Instance;
-                        
+                        AddSongs(ds.ScanRecursive(path));
                     }
                 }catch(Exception e)
                 {
