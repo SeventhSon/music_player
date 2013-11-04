@@ -148,11 +148,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="DB\musicplayermodel.png" />
-    <Resource Include="Images\prev.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\next.png" />
-    <Resource Include="Images\play2.jpg" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
