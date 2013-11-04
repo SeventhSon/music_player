@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Music_Player
 {
@@ -11,10 +12,30 @@ namespace Music_Player
     {
         private static volatile DirectoryScanner instance;
         private static object monitor = new Object();
-        private FileSystemWatcher FSW;
+        private Collection <FileSystemWatcher> FSW;
         private DirectoryScanner()
         {
-            //Initialize FileSystemWatcher
+            //Create a new FileSystemWatcher.
+            FileSystemWatcher watcher = new FileSystemWatcher();
+
+            //Set the filter to only catch TXT files.
+            watcher.Filter = "*.mp3";
+
+            //Subscribe to the Created event.
+            watcher.Created += new FileSystemEventHandler(watcher_FileCreated);
+
+            //Set the path
+            //////////////////////////some problems here
+            //watcher.Path = path;
+
+            //Enable the FileSystemWatcher events.
+            watcher.EnableRaisingEvents = true;
+        }
+
+        void watcher_FileCreated(object sender, FileSystemEventArgs e)
+        {
+            //scanning path again
+
         }
         public static DirectoryScanner Instance
         {
@@ -34,12 +55,44 @@ namespace Music_Player
         public int Scan(string path)
         {
             int MusicFilesFound = 0;
+            DirectoryInfo DI = new DirectoryInfo(path);
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = DI.FullName;
+            FSW.Add(watcher);
+            foreach (FileInfo file in DI.GetFiles())
+            {
+                if(file.Extension == ".mp3")
+                {
+                    MusicFilesFound++;
+                    //adding file do database
+                }
+            }
             //After scanning add directory to FileSystemWatcher
             return MusicFilesFound;
         }
         public int ScanRecursive(string path)
         {
             int MusicFilesFound = 0;
+            DirectoryInfo DI = new DirectoryInfo(path);
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = DI.FullName;
+            FSW.Add(watcher);
+            foreach (FileInfo file in DI.GetFiles())
+            {
+                if (file.Extension == ".mp3")
+                {
+                    MusicFilesFound++;
+                    //adding file to database
+                }
+            }
+            DirectoryInfo[] subDirectories = DI.GetDirectories();
+
+            foreach (DirectoryInfo subDirectory in subDirectories)
+            {
+                watcher.Path = subDirectory.FullName;
+                FSW.Add(watcher);
+                ScanRecursive(subDirectory.FullName);
+            }
             //After scanning add all directories to FileSystemWatcher
             return MusicFilesFound;
         }
