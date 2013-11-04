@@ -27,18 +27,6 @@ namespace Music_Player
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();      
-            //Console.WriteLine(dt.DataSet.ToString());
-            ThreadStart tester = TestMVVM;
-            new Thread(tester).Start();
-        }
-        private void TestMVVM()
-        {
-            MainViewModel mvm = (new ViewModelLocator()).Main;
-            DBManager dbm = DBManager.Instance;
-            int rowsAffected = dbm.executeNonQuery("Insert or ignore into songs (title, album, path,id_directory) values ('GhostWriter','RJD2','Path1',1),('GhostWriter','RJD2','Path2',1),('GhostWriter','RJD2','Path3',2),('GhostWriter','RJD2','Path4',3)");
-            DataTable dt = dbm.executeQuery("SELECT * FROM songs");
-            mvm.Results = dt.AsDataView();
-            mvm.Volume = mvm.Volume-1;
         }
     }
 }
