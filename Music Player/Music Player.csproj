@@ -93,7 +93,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="LibraryManager.cs" />
-    <Compile Include="MusicPlayer.cs" />
+    <Compile Include="AudioPlayer.cs" />
     <Compile Include="IntToTimeConverter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

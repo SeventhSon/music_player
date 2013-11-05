@@ -29,14 +29,13 @@ namespace Music_Player.ViewModel
         /// </summary>
         /// 
         // Model
-        private MusicPlayer musicPlayerModel;
+        private AudioPlayer musicPlayerModel;
         private LibraryManager libraryManagerModel;
 
         //ViewModel
         private string nowPlayingTrack = "Play a song";
         private string nowPlayingArtist = "";
         private int nowPlayingLenght = 0;
-        private int nowPlayingIndex = 0;
         private bool isPlaying = false;
         private DataView results = new DataView();
         private DataTable songs = new DataTable();
@@ -46,11 +45,13 @@ namespace Music_Player.ViewModel
         private DispatcherTimer timer;
         private RelayCommand<int> playCommand;
         private RelayCommand addCommand;
+        private RelayCommand nextCommand;
+        private RelayCommand prevCommand;
         public MainViewModel()
         {
             Messenger.Default.Register<string>(this, OnStringMessageReceived);
 
-            musicPlayerModel = new MusicPlayer();
+            musicPlayerModel = new AudioPlayer();
             libraryManagerModel = new LibraryManager();
 
             songs = libraryManagerModel.GetSongs();
@@ -75,6 +76,8 @@ namespace Music_Player.ViewModel
         private void dispatcherTimer_Tick(object sender, System.EventArgs e)
         {
             TimeEllapsed += 1;
+            if (TimeEllapsed > nowPlayingLenght)
+                timer.Stop();
             PercentagePlayed = TimeEllapsed / nowPlayingLenght;
         }
         private void OnStringMessageReceived(string msg)
@@ -82,18 +85,32 @@ namespace Music_Player.ViewModel
             if (msg.Equals("ReloadLibrary"))
             {
                 songs = libraryManagerModel.GetSongs();
-                Results = songs.AsDataView();
-            }else if (msg.Equals("ChangedTrack"))
+                DataTable songsDataView = new DataTable();
+                songsDataView.Columns.Add("Title", typeof(string));
+                songsDataView.Columns.Add("Artist", typeof(string));
+                songsDataView.Columns.Add("Album", typeof(string));
+                songsDataView.Columns.Add("Genre", typeof(string));
+                songsDataView.Columns.Add("Time", typeof(string));
+                foreach (DataRow row in songs.Rows)
+                {
+                    int t = Int16.Parse(row["Time"].ToString());
+                    string tt = t % 60 < 10 ? t / 60 + ":0" + t % 60 : t / 60 + ":" + t % 60;
+                    songsDataView.Rows.Add(row["Title"].ToString(), row["Artist"].ToString(), row["Album"].ToString(), row["Genre"].ToString(), tt);
+                }
+                Results = songsDataView.AsDataView();
+            }else if (msg.Equals("ReloadTrack"))
             {
-                NowPlayingIndex = musicPlayerModel.Index;
+                PercentagePlayed = 0;
+                IsPlaying = true;
+                NowPlayingArtist = musicPlayerModel.Artist;
+                NowPlayingTrack = musicPlayerModel.Track + " - " + musicPlayerModel.Album;
+                nowPlayingLenght = musicPlayerModel.GetTrackLength();
             }
         }
 
-        private void UpdateNowPlaying(int selectedIndex)
+        private void UpdateQueue(int selectedIndex)
         {
-            NowPlayingIndex = selectedIndex;
-            musicPlayerModel.Index = NowPlayingIndex;
-            musicPlayerModel.Queue = songs;
+            musicPlayerModel.SetQueue(songs,selectedIndex);
         }
         private void ScanFolder()
         {
@@ -104,13 +121,21 @@ namespace Music_Player.ViewModel
                 libraryManagerModel.AddSongs(ds.ScanRecursive(dialog.SelectedPath,null));
             }
         }
+        private void NextSong()
+        {
+            musicPlayerModel.Next();
+        }
+        private void PrevSong()
+        {
+            musicPlayerModel.Prev();
+        }
         public RelayCommand<int> PlayCommand
         {
             get
             {
                 if (playCommand == null)
                 {
-                    playCommand = new RelayCommand<int>(selectedIndex => UpdateNowPlaying(selectedIndex));
+                    playCommand = new RelayCommand<int>(selectedIndex => UpdateQueue(selectedIndex));
                 }
 
                 return playCommand;
@@ -128,23 +153,28 @@ namespace Music_Player.ViewModel
                 return addCommand;
             }
         }
-        public int NowPlayingIndex
+        public RelayCommand NextCommand
         {
             get
             {
-                return nowPlayingIndex;
+                if (nextCommand == null)
+                {
+                    nextCommand = new RelayCommand(NextSong);
+                }
+
+                return nextCommand;
             }
-            set
+        }
+        public RelayCommand PrevCommand
+        {
+            get
             {
-                if (nowPlayingIndex == value)
-                    return;
-                nowPlayingIndex = value;
-                RaisePropertyChanged("NowPlayingIndex");
-                PercentagePlayed = 0;
-                DataTable Queue = musicPlayerModel.Queue;
-                NowPlayingArtist = Queue.Rows[NowPlayingIndex]["Artist"].ToString();
-                NowPlayingTrack = Queue.Rows[NowPlayingIndex]["Title"].ToString();
-                nowPlayingLenght = (int)Queue.Rows[NowPlayingIndex]["Time"];
+                if (prevCommand == null)
+                {
+                    prevCommand = new RelayCommand(PrevSong);
+                }
+
+                return prevCommand;
             }
         }
         public string NowPlayingTrack
@@ -189,12 +219,12 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("IsPlaying");
                 if (isPlaying)
                 {
-                    timer.Start();
+                   // timer.Start();
                     musicPlayerModel.Play();
                 }
                 else
                 {
-                    timer.Stop();
+                   // timer.Stop();
                     musicPlayerModel.Pause();
                 }
             }
@@ -224,7 +254,7 @@ namespace Music_Player.ViewModel
                 if (volume == value)
                     return;
                 volume = value;
-                musicPlayerModel.changeVolume(volume);
+                musicPlayerModel.ChangeVolume(volume);
                 RaisePropertyChanged("Volume");
             }
         }
@@ -255,7 +285,7 @@ namespace Music_Player.ViewModel
                 percentagePlayed = value;
                 RaisePropertyChanged("PercentagePlayed");
                 TimeEllapsed = percentagePlayed * nowPlayingLenght/100;
-                //musicPlayerModel.Seek(TimeEllapsed);                
+                musicPlayerModel.Seek(TimeEllapsed);                
             }
         }
     }
