@@ -959,7 +959,7 @@
         <Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="6.667" Margin="10,58.333,0,0" RadiusY="40" VerticalAlignment="Top" Width="15"/>
         <Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="9.25" Margin="25,55.75,0,0" RadiusY="40" VerticalAlignment="Top" Width="15"/>
         <Rectangle Grid.Column="2" Fill="#FFADB4FF" HorizontalAlignment="Left" Height="13.25" Margin="40,51.75,0,0" RadiusY="40" VerticalAlignment="Top" Width="15.021"/>
-        <Slider x:Name="TimeSlider" Grid.Column="1" Margin="10,58.333,10,0" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Maximum="100" Value="{Binding PercentagePlayed}">
+        <Slider x:Name="TimeSlider" Grid.Column="1" Margin="10,58.333,10,0" Style="{DynamicResource SimpleSlider}" Foreground="#FF7E7EFF" Maximum="1000" Value="{Binding PercentagePlayed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
             <Slider.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                     <GradientStop Color="White" Offset="0"/>

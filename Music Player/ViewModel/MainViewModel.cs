@@ -75,10 +75,12 @@ namespace Music_Player.ViewModel
 
         private void dispatcherTimer_Tick(object sender, System.EventArgs e)
         {
-            TimeEllapsed += 1;
-            if (TimeEllapsed > nowPlayingLenght)
+            if (TimeEllapsed >= nowPlayingLenght)
+            {
                 timer.Stop();
-            PercentagePlayed = TimeEllapsed / nowPlayingLenght;
+                return;
+            }
+            TimeEllapsed += 1;
         }
         private void OnStringMessageReceived(string msg)
         {
@@ -100,7 +102,7 @@ namespace Music_Player.ViewModel
                 Results = songsDataView.AsDataView();
             }else if (msg.Equals("ReloadTrack"))
             {
-                PercentagePlayed = 0;
+                TimeEllapsed = 0;
                 IsPlaying = true;
                 NowPlayingArtist = musicPlayerModel.Artist;
                 NowPlayingTrack = musicPlayerModel.Track + " - " + musicPlayerModel.Album;
@@ -181,7 +183,7 @@ namespace Music_Player.ViewModel
         {
             get 
             {
-                return nowPlayingTrack;
+                return nowPlayingTrack.Equals("")?"Unknown Track":nowPlayingTrack;
             }
             set 
             {
@@ -195,7 +197,7 @@ namespace Music_Player.ViewModel
         {
             get
             {
-                return nowPlayingArtist;
+                return nowPlayingArtist.Equals("") ? "Unknown Artist" : nowPlayingArtist; ;
             }
             set
             {
@@ -219,12 +221,12 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("IsPlaying");
                 if (isPlaying)
                 {
-                   // timer.Start();
+                    timer.Start();
                     musicPlayerModel.Play();
                 }
                 else
                 {
-                   // timer.Stop();
+                    timer.Stop();
                     musicPlayerModel.Pause();
                 }
             }
@@ -269,7 +271,8 @@ namespace Music_Player.ViewModel
                 if (timeEllapsed == value)
                     return;
                 timeEllapsed = value;
-                RaisePropertyChanged("TimeEllapsed");            
+                PercentagePlayed = (int)((double)(timeEllapsed) / (double)(nowPlayingLenght) * 1000);
+                RaisePropertyChanged("TimeEllapsed");
             }
         }
         public int PercentagePlayed
@@ -282,10 +285,15 @@ namespace Music_Player.ViewModel
             {
                 if (percentagePlayed == value)
                     return;
+                RaisePropertyChanging("PercentagePlayed");
+                int oldvalue = percentagePlayed;
                 percentagePlayed = value;
                 RaisePropertyChanged("PercentagePlayed");
-                TimeEllapsed = percentagePlayed * nowPlayingLenght/100;
-                musicPlayerModel.Seek(TimeEllapsed);                
+                if ((int)((double)TimeEllapsed / (double)nowPlayingLenght * 1000) != percentagePlayed)
+                {
+                    TimeEllapsed = (int)((double)percentagePlayed/1000 * nowPlayingLenght);
+                    musicPlayerModel.Seek(TimeEllapsed);
+                }
             }
         }
     }
