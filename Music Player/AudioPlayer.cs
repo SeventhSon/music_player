@@ -17,6 +17,7 @@ namespace Music_Player
         WaveChannel32 volumeStream;
         private DataTable queue;
         private int index=-1;
+        private float Volume = 0.75f;
         public AudioPlayer()
         {
             waveOutDevice = new WaveOut();
@@ -25,6 +26,7 @@ namespace Music_Player
         public void ChangeVolume(int volume)
         {
             volumeStream.Volume = (float)volume / 100;
+            Volume = (float)volume / 100;
         }
         public void Pause()
         {
@@ -76,6 +78,8 @@ namespace Music_Player
                 throw new InvalidOperationException("Unsupported extension");
             }
             volumeStream = inputStream;
+            volumeStream.Volume = Volume;
+            volumeStream.PadWithZeroes = false;
             return volumeStream;
         }
         private void Reload()

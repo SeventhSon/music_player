@@ -39,7 +39,7 @@ namespace Music_Player.ViewModel
         private bool isPlaying = false;
         private DataView results = new DataView();
         private DataTable songs = new DataTable();
-        private int volume = 100;
+        private int volume = 75;
         private int percentagePlayed = 0;
         private int timeEllapsed = 0;
         private DispatcherTimer timer;
