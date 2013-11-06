@@ -124,7 +124,6 @@ namespace Music_Player
         void OnPlaybackStopped(object sender, EventArgs e)
         {
             Reload();
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string, ViewModel.MainViewModel>("ReloadTrack");
         }
         public int Index 
         {

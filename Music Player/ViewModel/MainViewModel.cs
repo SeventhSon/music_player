@@ -103,6 +103,7 @@ namespace Music_Player.ViewModel
             }else if (msg.Equals("ReloadTrack"))
             {
                 TimeEllapsed = 0;
+                timer.Start();
                 IsPlaying = true;
                 NowPlayingArtist = musicPlayerModel.Artist;
                 NowPlayingTrack = musicPlayerModel.Track + " - " + musicPlayerModel.Album;

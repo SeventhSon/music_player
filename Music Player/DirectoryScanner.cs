@@ -38,6 +38,11 @@ namespace Music_Player
                 return instance;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public DataTable Scan(string path)
         {
             DataTable dt = new DataTable();
@@ -65,6 +70,12 @@ namespace Music_Player
             }
             return dt;
         }
+        /// <summary>
+        /// Scans directory given by path. Descends into subdirectories and recursively scan them. Inserts scanned directories in DB
+        /// </summary>
+        /// <param name="path">Location of the directory</param>
+        /// <param name="dt">DataTable handle for recursive addition</param>
+        /// <returns>DataTable with scanned mp3 files</returns>
         public DataTable ScanRecursive(string path, DataTable dt)
         {
             if(dt == null)
@@ -99,6 +110,11 @@ namespace Music_Player
                 ScanRecursive(subDirectory.FullName,dt);
             return dt;
         }
+        /// <summary>
+        /// Constructs a string delimited by comas from given string array
+        /// </summary>
+        /// <param name="array">Array of strings</param>
+        /// <returns>Concatanation of strings</returns>
         static string ConvertStringArrayToString(string[] array)
         {
             //

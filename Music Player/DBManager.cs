@@ -15,6 +15,10 @@ namespace Music_Player
         private static volatile DBManager instance;
         private static object Monitor = new Object();
         private static string DBConnectionLink;
+        /// <summary>
+        /// Checks for presence of database file. If no DB file is found the 
+        /// DB is recreated from DDL script and placed in the DB folder. 
+        /// </summary>
         private DBManager()
         {
             string DBFile = AppDomain.CurrentDomain.BaseDirectory +"\\DB\\musiclibrary.sqlite";
@@ -30,6 +34,9 @@ namespace Music_Player
             }
             DBConnectionLink = "Data Source=" + DBFile;
         }
+        /// <summary>
+        /// Holds the handle to singleton instance
+        /// </summary>
         public static DBManager Instance
         {
             get
@@ -45,6 +52,11 @@ namespace Music_Player
                 return instance;
             }
         }
+        /// <summary>
+        /// Executes user specified query on database
+        /// </summary>
+        /// <param name="SQL">Select query</param>
+        /// <returns>DataTable with results of the query</returns>
         public DataTable executeQuery(string SQL)
         {
             DataTable dt = new DataTable();
@@ -62,10 +74,16 @@ namespace Music_Player
             }
             catch (SQLiteException e)
             {
-                MessageBox.Show(e.Message+"\n"+e.StackTrace+"\n"+SQL);
+                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL Query");
+                Console.WriteLine(SQL);
             }
             return dt;
         }
+        /// <summary>
+        /// Executes user specified nonQuery (such as UPDATE, INSERT, etc.) on DB
+        /// </summary>
+        /// <param name="SQL">UPDATE, INSERT etc. Query</param>
+        /// <returns></returns>
         public int executeNonQuery(string SQL)
         {
             int RowsAffected = -1;
@@ -81,26 +99,32 @@ namespace Music_Player
             }
             catch (SQLiteException e)
             {
-                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL");
+                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL Query");
                 Console.WriteLine(SQL);
             }
             return RowsAffected;
         }
+        /// <summary>
+        /// Executes an SQL script from given path
+        /// </summary>
+        /// <param name="path">The location of the script file</param>
+        /// <returns>Number of rows affected</returns>
         public int ExecuteScript(string path)
         {
             int RowsAffected = 0;
 
             try
             {
-                string[] script = File.ReadAllText(path).Split(';');
+                //Split the file by delimiters
+                string[] Script = File.ReadAllText(path).Split(';');
                 using (SQLiteConnection DBConnection = new SQLiteConnection(DBConnectionLink))
                 {
                     DBConnection.Open();
-                    foreach (string Line in script)
+                    foreach (string Command in Script)
                     {
                         try
                         {
-                            SQLiteCommand Query = new SQLiteCommand(Line, DBConnection);
+                            SQLiteCommand Query = new SQLiteCommand(Command, DBConnection);
                             RowsAffected += Query.ExecuteNonQuery();
                         }
                         catch (SQLiteException e)
@@ -118,6 +142,9 @@ namespace Music_Player
             }
             return RowsAffected;
         }
+        /// <summary>
+        /// Allows for reseting the singleton and disposing of the previous instance
+        /// </summary>
         public static void reset()
         {
             instance = null;
