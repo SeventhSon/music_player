@@ -49,11 +49,14 @@ namespace Music_Player.ViewModel
         private RelayCommand prevCommand;
         public MainViewModel()
         {
+            //Register for string messages
             Messenger.Default.Register<string>(this, OnStringMessageReceived);
 
+            //Initialize models
             musicPlayerModel = new AudioPlayer();
             libraryManagerModel = new LibraryManager();
 
+            //Grab songs
             songs = libraryManagerModel.GetSongs();
             DataTable songsDataView = new DataTable();
             songsDataView.Columns.Add("Title",typeof(string));
@@ -67,12 +70,17 @@ namespace Music_Player.ViewModel
                 string tt = t % 60 < 10 ? t / 60 + ":0" + t % 60 : t / 60 + ":" + t % 60;
                 songsDataView.Rows.Add(row["Title"].ToString(), row["Artist"].ToString(), row["Album"].ToString(), row["Genre"].ToString(),tt);
             }
+            //Display the modified songs table
             Results = songsDataView.AsDataView();
             timer = new DispatcherTimer();
             timer.Tick += dispatcherTimer_Tick;
             timer.Interval = new TimeSpan(0, 0, 1);
         }
-
+        /// <summary>
+        /// Timer counting the time since the start of the song till the end of it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dispatcherTimer_Tick(object sender, System.EventArgs e)
         {
             if (TimeEllapsed >= nowPlayingLenght)
@@ -82,6 +90,10 @@ namespace Music_Player.ViewModel
             }
             TimeEllapsed += 1;
         }
+        /// <summary>
+        /// Handler for message received event
+        /// </summary>
+        /// <param name="msg">Content of the string message</param>
         private void OnStringMessageReceived(string msg)
         {
             if (msg.Equals("ReloadLibrary"))
@@ -110,11 +122,17 @@ namespace Music_Player.ViewModel
                 nowPlayingLenght = musicPlayerModel.GetTrackLength();
             }
         }
-
+        /// <summary>
+        /// Set the play queue for the audioplayer
+        /// </summary>
+        /// <param name="selectedIndex">Index of the song to play in the queue</param>
         private void UpdateQueue(int selectedIndex)
         {
             musicPlayerModel.SetQueue(songs,selectedIndex);
         }
+        /// <summary>
+        /// Opens directory browser dialog and scans recursively selected directory
+        /// </summary>
         private void ScanFolder()
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -124,14 +142,21 @@ namespace Music_Player.ViewModel
                 libraryManagerModel.AddSongs(ds.ScanRecursive(dialog.SelectedPath,null));
             }
         }
+        /// <summary>
+        /// Play next song from the play queue
+        /// </summary>
         private void NextSong()
         {
             musicPlayerModel.Next();
         }
+        /// <summary>
+        /// Play previous song from the play queue
+        /// </summary>
         private void PrevSong()
         {
             musicPlayerModel.Prev();
         }
+        //Bound properties and commands
         public RelayCommand<int> PlayCommand
         {
             get
@@ -290,8 +315,10 @@ namespace Music_Player.ViewModel
                 int oldvalue = percentagePlayed;
                 percentagePlayed = value;
                 RaisePropertyChanged("PercentagePlayed");
+                //Detect if change made by user or if slider just naturally progressed
                 if ((int)((double)TimeEllapsed / (double)nowPlayingLenght * 1000) != percentagePlayed)
                 {
+                    //If so change timeEllapsed to new value from slider position and seek
                     TimeEllapsed = (int)((double)percentagePlayed/1000 * nowPlayingLenght);
                     musicPlayerModel.Seek(TimeEllapsed);
                 }

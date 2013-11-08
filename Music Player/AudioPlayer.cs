@@ -7,6 +7,8 @@ using System.Threading;
 using System.Data;
 using NAudio;
 using NAudio.Wave;
+using System.IO;
+using System.Windows;
 
 namespace Music_Player
 {
@@ -68,21 +70,22 @@ namespace Music_Player
         private WaveStream CreateInputStream(string fileName)
         {
             WaveChannel32 inputStream;
-            if (fileName.EndsWith(".mp3"))
+            if (fileName.EndsWith(".mp3")&& File.Exists(fileName))
             {
                 WaveStream mp3Reader = new Mp3FileReader(fileName);
                 inputStream = new WaveChannel32(mp3Reader);
             }
             else
             {
-                throw new InvalidOperationException("Unsupported extension");
+                MessageBox.Show("File is missing!");
+                return null;
             }
             volumeStream = inputStream;
             volumeStream.Volume = Volume;
             volumeStream.PadWithZeroes = false;
             return volumeStream;
         }
-        private void Reload()
+        private void ReloadTrack()
         {
             if (queue == null || queue.Rows.Count <= Index)
                 return;
@@ -91,6 +94,7 @@ namespace Music_Player
             Track = queue.Rows[Index]["Title"].ToString();
             Album = queue.Rows[Index]["Album"].ToString();
             mainOutputStream = CreateInputStream(queue.Rows[Index]["Path"].ToString());
+            if (mainOutputStream == null) return;
             waveOutDevice.Init(mainOutputStream);
             Index++;
             Play();
@@ -119,11 +123,11 @@ namespace Music_Player
             //queue = q.Copy();
             queue = q;
             Index = i;
-            Reload();
+            ReloadTrack();
         }
         void OnPlaybackStopped(object sender, EventArgs e)
         {
-            Reload();
+            ReloadTrack();
         }
         public int Index 
         {

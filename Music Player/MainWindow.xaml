@@ -950,7 +950,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <DataGrid x:Name="SongGrid" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Background="White" BorderBrush="{x:Null}" AlternatingRowBackground="White" RowBackground="#FFEBECF5" ItemsSource="{Binding Path=Results,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontFamily="Tw Cen MT" GridLinesVisibility="None" BorderThickness="0" Foreground="#FF7E7EFF" MinColumnWidth="60" RowHeight="25" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" FontSize="14" IsReadOnly="True" HeadersVisibility="Column">
+        <DataGrid x:Name="SongGrid" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Background="White" BorderBrush="{x:Null}" AlternatingRowBackground="White" RowBackground="#FFEBECF5" ItemsSource="{Binding Path=Results,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontFamily="Tw Cen MT" GridLinesVisibility="None" BorderThickness="0" Foreground="#FF7E7EFF" MinColumnWidth="60" RowHeight="25" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" FontSize="14" IsReadOnly="True" HeadersVisibility="Column" CanUserReorderColumns="False">
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding PlayCommand}" CommandParameter="{Binding ElementName=SongGrid, Path=SelectedIndex}" />
             </DataGrid.InputBindings>

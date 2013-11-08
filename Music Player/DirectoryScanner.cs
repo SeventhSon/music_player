@@ -58,7 +58,7 @@ namespace Music_Player
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
             DBManager dbm = DBManager.Instance;
-            dbm.executeNonQuery("Insert or ignore into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+            dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             foreach (FileInfo file in DI.GetFiles())
             {
@@ -94,8 +94,9 @@ namespace Music_Player
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
             DBManager dbm = DBManager.Instance;
-            dbm.executeNonQuery("Insert or ignore into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+            dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
+            if (!hasAccessToFolder(path)) return dt;
             foreach (FileInfo file in DI.GetFiles())
             {
                 if(file.Extension == ".mp3")
@@ -109,6 +110,19 @@ namespace Music_Player
             foreach (DirectoryInfo subDirectory in subDirectories)
                 ScanRecursive(subDirectory.FullName,dt);
             return dt;
+        }
+        private bool hasAccessToFolder(string folderPath)
+        {
+            try
+            {
+                DirectoryInfo DI = new DirectoryInfo(folderPath);
+                DI.GetFiles();
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
         /// <summary>
         /// Constructs a string delimited by comas from given string array

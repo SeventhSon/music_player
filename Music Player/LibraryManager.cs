@@ -12,26 +12,44 @@ namespace Music_Player
 {
     class LibraryManager
     {
+        /// <summary>
+        /// Create new object of Library Manager and rescans every already scanned directory
+        /// </summary>
         public LibraryManager()
         {
             RescanLibrary();
         }
+        /// <summary>
+        /// Queries DB for songs data
+        /// </summary>
+        /// <returns>DataTable with songs info</returns>
         public DataTable GetSongs()
         {
             DBManager dbm = DBManager.Instance;
             return dbm.executeQuery("Select title as Title, artist as Artist, album as Album, genre as Genre, length as Time,path as Path from songs");
         }
+        /// <summary>
+        /// Queries DB for directories data
+        /// </summary>
+        /// <returns>DataTable with directiories info</returns>
         public DataTable GetDirectories()
         {
             DBManager dbm = DBManager.Instance;
             return dbm.executeQuery("Select id as ID, path as Path, last_write_time as LastWriteTime from directories");
         }
-
+        /// <summary>
+        /// Queries DB for songs data
+        /// </summary>
+        /// <returns>DataTable with playlists info</returns>
         public DataTable GetPlaylists()
         {
             DBManager dbm = DBManager.Instance;
             return dbm.executeQuery("Select title as Title from directories");
         }
+        /// <summary>
+        /// Adds songs given in the DataTable to DB
+        /// </summary>
+        /// <param name="songs">DataTable with songs info</param>
         public void AddSongs(DataTable songs)
         {
             string insertString = "";
@@ -49,10 +67,15 @@ namespace Music_Player
                 if (i != songs.Rows.Count - 1)
                     insertString += ",";
             }
+            if (insertString.Equals(""))
+                return;
             DBManager dbm = DBManager.Instance;
-            dbm.executeNonQuery("Insert or ignore into songs (title,artist,album,genre,length,path,id_directory) values " + insertString);
+            dbm.executeNonQuery("Insert or replace into songs (title,artist,album,genre,length,path,id_directory) values " + insertString);
             Messenger.Default.Send<string, MainViewModel>("ReloadLibrary");
         }
+        /// <summary>
+        /// Grabs scanned directories from DB. For each directory with LastWriteTime different than last seen scans for changes in this directory
+        /// </summary>
         private void RescanLibrary()
         {
             DataTable dirs = GetDirectories();
@@ -63,8 +86,15 @@ namespace Music_Player
                 long lastWriteTime = (long)row["LastWriteTime"];
                 try
                 {
-                    if(lastWriteTime < File.GetLastWriteTime(path).ToFileTime())
+                    if(!Directory.Exists(path))
                     {
+                        DBManager dbm = DBManager.Instance;
+                        dbm.executeNonQuery("DELETE FROM directories WHERE id=" + dirId);
+                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
+                    }else if (lastWriteTime < Directory.GetLastWriteTime(path).ToFileTime())
+                    {
+                        DBManager dbm = DBManager.Instance;
+                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
                         DirectoryScanner ds = DirectoryScanner.Instance;
                         AddSongs(ds.Scan(path));
                     }
