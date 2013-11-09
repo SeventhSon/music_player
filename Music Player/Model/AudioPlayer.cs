@@ -9,15 +9,16 @@ using NAudio;
 using NAudio.Wave;
 using System.IO;
 using System.Windows;
+using System.Collections;
 
-namespace Music_Player
+namespace Music_Player.Model
 {
     public class AudioPlayer
     {
         IWavePlayer waveOutDevice;
         WaveStream mainOutputStream;
         WaveChannel32 volumeStream;
-        private DataTable queue;
+        private List<SongModel> queue;
         private int index=-1;
         private float Volume = 0.75f;
         public AudioPlayer()
@@ -50,7 +51,6 @@ namespace Music_Player
         {
             if (volumeStream != null) 
             {
-                //Index++;
                 waveOutDevice.Stop();
             }
         }
@@ -98,7 +98,7 @@ namespace Music_Player
             waveOutDevice.Init(mainOutputStream);
             Index++;
             Play();
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string, ViewModel.MainViewModel>("ReloadTrack");
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string, ViewModel.ApplicationViewModel>("ReloadTrack");
         }
         private void CloseTrack()
         {

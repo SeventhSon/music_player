@@ -2,7 +2,7 @@
 -- Author:        Guru
 -- Caption:       New Model
 -- Project:       Name of the project
--- Changed:       2013-11-02 14:49
+-- Changed:       2013-11-09 23:31
 -- Created:       2013-11-02 01:04
 PRAGMA foreign_keys = OFF;
 
@@ -25,6 +25,7 @@ CREATE TABLE "songs"(
   "artist" VARCHAR(45),
   "album" VARCHAR(45),
   "title" VARCHAR(45),
+  "year" INTEGER,
   "genre" VARCHAR(45),
   "track_no" INTEGER,
   "rating" INTEGER,

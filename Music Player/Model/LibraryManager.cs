@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Music_Player.ViewModel;
 using System.IO;
 
-namespace Music_Player
+namespace Music_Player.Model
 {
     class LibraryManager
     {
@@ -71,7 +71,7 @@ namespace Music_Player
                 return;
             DBManager dbm = DBManager.Instance;
             dbm.executeNonQuery("Insert or replace into songs (title,artist,album,genre,length,path,id_directory) values " + insertString);
-            Messenger.Default.Send<string, MainViewModel>("ReloadLibrary");
+            Messenger.Default.Send<string, ApplicationViewModel>("ReloadLibrary");
         }
         /// <summary>
         /// Grabs scanned directories from DB. For each directory with LastWriteTime different than last seen scans for changes in this directory

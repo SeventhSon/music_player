@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Windows;
 
-namespace Music_Player
+namespace Music_Player.Model
 {
     public sealed class DBManager
     {

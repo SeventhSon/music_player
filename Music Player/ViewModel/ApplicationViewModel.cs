@@ -1,11 +1,10 @@
+using System;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Data;
-using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using System.Windows.Threading;
-using System;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using Music_Player.Model;
+using System.Collections.Generic;
 
 namespace Music_Player.ViewModel
 {
@@ -22,7 +21,7 @@ namespace Music_Player.ViewModel
     /// </para>
     /// </summary>
     /// 
-    public class MainViewModel : ViewModelBase 
+    public class ApplicationViewModel : ViewModelBase 
     {
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -33,21 +32,26 @@ namespace Music_Player.ViewModel
         private LibraryManager libraryManagerModel;
 
         //ViewModel
-        private string nowPlayingTrack = "Play a song";
-        private string nowPlayingArtist = "";
+        private string _nowPlayingTrack = "Play a song";
+        private string _nowPlayingArtist = "";
         private int nowPlayingLenght = 0;
-        private bool isPlaying = false;
-        private DataView results = new DataView();
-        private DataTable songs = new DataTable();
-        private int volume = 75;
-        private int percentagePlayed = 0;
-        private int timeEllapsed = 0;
+        private bool _isPlaying = false;
+        private List<SongModel> _songList;
+        private int _volume = 75;
+        private int _percentagePlayed = 0;
+        private int _timeEllapsed = 0;
         private DispatcherTimer timer;
-        private RelayCommand<int> playCommand;
-        private RelayCommand addCommand;
-        private RelayCommand nextCommand;
-        private RelayCommand prevCommand;
-        public MainViewModel()
+        private RelayCommand<int> _playCommand;
+        private RelayCommand _addCommand;
+        private RelayCommand _nextCommand;
+        private RelayCommand _prevCommand;
+
+        //ViewModel navigation
+        private List<ViewModelBase> _pageViewModels;
+        private ViewModelBase _currentPageViewModel;
+        private RelayCommand<ViewModelBase> _changePageCommand;
+
+        public ApplicationViewModel()
         {
             //Register for string messages
             Messenger.Default.Register<string>(this, OnStringMessageReceived);
@@ -57,21 +61,8 @@ namespace Music_Player.ViewModel
             libraryManagerModel = new LibraryManager();
 
             //Grab songs
-            songs = libraryManagerModel.GetSongs();
-            DataTable songsDataView = new DataTable();
-            songsDataView.Columns.Add("Title",typeof(string));
-            songsDataView.Columns.Add("Artist", typeof(string));
-            songsDataView.Columns.Add("Album", typeof(string));
-            songsDataView.Columns.Add("Genre", typeof(string));
-            songsDataView.Columns.Add("Time", typeof(string));
-            foreach(DataRow row in songs.Rows)
-            {
-                int t = Int16.Parse(row["Time"].ToString());
-                string tt = t % 60 < 10 ? t / 60 + ":0" + t % 60 : t / 60 + ":" + t % 60;
-                songsDataView.Rows.Add(row["Title"].ToString(), row["Artist"].ToString(), row["Album"].ToString(), row["Genre"].ToString(),tt);
-            }
-            //Display the modified songs table
-            Results = songsDataView.AsDataView();
+            _songList = libraryManagerModel.GetSongs();
+            
             timer = new DispatcherTimer();
             timer.Tick += dispatcherTimer_Tick;
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -98,20 +89,7 @@ namespace Music_Player.ViewModel
         {
             if (msg.Equals("ReloadLibrary"))
             {
-                songs = libraryManagerModel.GetSongs();
-                DataTable songsDataView = new DataTable();
-                songsDataView.Columns.Add("Title", typeof(string));
-                songsDataView.Columns.Add("Artist", typeof(string));
-                songsDataView.Columns.Add("Album", typeof(string));
-                songsDataView.Columns.Add("Genre", typeof(string));
-                songsDataView.Columns.Add("Time", typeof(string));
-                foreach (DataRow row in songs.Rows)
-                {
-                    int t = Int16.Parse(row["Time"].ToString());
-                    string tt = t % 60 < 10 ? t / 60 + ":0" + t % 60 : t / 60 + ":" + t % 60;
-                    songsDataView.Rows.Add(row["Title"].ToString(), row["Artist"].ToString(), row["Album"].ToString(), row["Genre"].ToString(), tt);
-                }
-                Results = songsDataView.AsDataView();
+                _songList = libraryManagerModel.GetSongs();
             }else if (msg.Equals("ReloadTrack"))
             {
                 TimeEllapsed = 0;
@@ -128,7 +106,7 @@ namespace Music_Player.ViewModel
         /// <param name="selectedIndex">Index of the song to play in the queue</param>
         private void UpdateQueue(int selectedIndex)
         {
-            musicPlayerModel.SetQueue(songs,selectedIndex);
+            musicPlayerModel.SetQueue(SongList,selectedIndex);
         }
         /// <summary>
         /// Opens directory browser dialog and scans recursively selected directory
@@ -156,66 +134,116 @@ namespace Music_Player.ViewModel
         {
             musicPlayerModel.Prev();
         }
+        private void ChangeViewModel(ViewModelBase p)
+        {
+
+        }
         //Bound properties and commands
+        public RelayCommand<ViewModelBase> ChangePageCommand
+        {
+            get
+            {
+                if (_changePageCommand == null)
+                {
+                    _changePageCommand = new RelayCommand<ViewModelBase>(page => ChangeViewModel(page));
+                }
+
+                return _changePageCommand;
+            }
+        }
         public RelayCommand<int> PlayCommand
         {
             get
             {
-                if (playCommand == null)
+                if (_playCommand == null)
                 {
-                    playCommand = new RelayCommand<int>(selectedIndex => UpdateQueue(selectedIndex));
+                    _playCommand = new RelayCommand<int>(selectedIndex => UpdateQueue(selectedIndex));
                 }
 
-                return playCommand;
+                return _playCommand;
             }
         }
         public RelayCommand AddCommand
         {
             get
             {
-                if (addCommand == null)
+                if (_addCommand == null)
                 {
-                    addCommand = new RelayCommand(ScanFolder);
+                    _addCommand = new RelayCommand(ScanFolder);
                 }
 
-                return addCommand;
+                return _addCommand;
             }
         }
         public RelayCommand NextCommand
         {
             get
             {
-                if (nextCommand == null)
+                if (_nextCommand == null)
                 {
-                    nextCommand = new RelayCommand(NextSong);
+                    _nextCommand = new RelayCommand(NextSong);
                 }
 
-                return nextCommand;
+                return _nextCommand;
             }
         }
         public RelayCommand PrevCommand
         {
             get
             {
-                if (prevCommand == null)
+                if (_prevCommand == null)
                 {
-                    prevCommand = new RelayCommand(PrevSong);
+                    _prevCommand = new RelayCommand(PrevSong);
                 }
 
-                return prevCommand;
+                return _prevCommand;
+            }
+        }
+        public ViewModelBase CurrentPageViewModel
+        {
+            get
+            {
+                return _currentPageViewModel;
+            }
+            set
+            {
+                if (_currentPageViewModel != value)
+                {
+                    _currentPageViewModel = value;
+                    RaisePropertyChanged("CurrentPageViewModel");
+                }
+            }
+        }
+        public List<ViewModelBase> PageViewModels
+        {
+            get
+            {
+                if (_pageViewModels == null)
+                    _pageViewModels = new List<ViewModelBase>();
+
+                return _pageViewModels;
+            }
+        }
+        public List<SongModel> SongList
+        {
+            get;
+            set
+            {
+                _songList = value;
+                RaisePropertyChanged("SongList");
             }
         }
         public string NowPlayingTrack
         {
             get 
             {
-                return nowPlayingTrack.Equals("")?"Unknown Track":nowPlayingTrack;
+                return _nowPlayingTrack.Equals("")?"Unknown Track":_nowPlayingTrack;
             }
             set 
             {
-                if (nowPlayingTrack == value)
+                if (_nowPlayingTrack == value)
                     return;
-                nowPlayingTrack = value;
+                _nowPlayingTrack = value;
                 RaisePropertyChanged("NowPlayingTrack");
             }
         }
@@ -223,13 +251,13 @@ namespace Music_Player.ViewModel
         {
             get
             {
-                return nowPlayingArtist.Equals("") ? "Unknown Artist" : nowPlayingArtist; ;
+                return _nowPlayingArtist.Equals("") ? "Unknown Artist" : _nowPlayingArtist; ;
             }
             set
             {
-                if (nowPlayingArtist == value)
+                if (_nowPlayingArtist == value)
                     return;
-                nowPlayingArtist = value;
+                _nowPlayingArtist = value;
                 RaisePropertyChanged("NowPlayingArtist");
             }
         }
@@ -237,15 +265,15 @@ namespace Music_Player.ViewModel
         {
             get
             {
-                return isPlaying;
+                return _isPlaying;
             }
             set
             {
-                if (isPlaying == value)
+                if (_isPlaying == value)
                     return;
-                isPlaying = value;
+                _isPlaying = value;
                 RaisePropertyChanged("IsPlaying");
-                if (isPlaying)
+                if (_isPlaying)
                 {
                     timer.Start();
                     musicPlayerModel.Play();
@@ -257,32 +285,18 @@ namespace Music_Player.ViewModel
                 }
             }
         }
-        public DataView Results
-        {
-            get
-            {
-                return results;
-            }
-            set
-            {
-                if (results == value)
-                    return;
-                results = value;
-                RaisePropertyChanged("Results");
-            }
-        }
         public int Volume
         {
             get
             {
-                return volume;
+                return _volume;
             }
             set
             {
-                if (volume == value)
+                if (_volume == value)
                     return;
-                volume = value;
-                musicPlayerModel.ChangeVolume(volume);
+                _volume = value;
+                musicPlayerModel.ChangeVolume(_volume);
                 RaisePropertyChanged("Volume");
             }
         }
@@ -290,14 +304,14 @@ namespace Music_Player.ViewModel
         {
             get
             {
-                return timeEllapsed;
+                return _timeEllapsed;
             }
             set
             {
-                if (timeEllapsed == value)
+                if (_timeEllapsed == value)
                     return;
-                timeEllapsed = value;
-                PercentagePlayed = (int)((double)(timeEllapsed) / (double)(nowPlayingLenght) * 1000);
+                _timeEllapsed = value;
+                PercentagePlayed = (int)((double)(_timeEllapsed) / (double)(nowPlayingLenght) * 1000);
                 RaisePropertyChanged("TimeEllapsed");
             }
         }
@@ -305,21 +319,21 @@ namespace Music_Player.ViewModel
         {
             get
             {
-                return percentagePlayed;
+                return _percentagePlayed;
             }
             set
             {
-                if (percentagePlayed == value)
+                if (_percentagePlayed == value)
                     return;
                 RaisePropertyChanging("PercentagePlayed");
-                int oldvalue = percentagePlayed;
-                percentagePlayed = value;
+                int oldvalue = _percentagePlayed;
+                _percentagePlayed = value;
                 RaisePropertyChanged("PercentagePlayed");
                 //Detect if change made by user or if slider just naturally progressed
-                if ((int)((double)TimeEllapsed / (double)nowPlayingLenght * 1000) != percentagePlayed)
+                if ((int)((double)TimeEllapsed / (double)nowPlayingLenght * 1000) != _percentagePlayed)
                 {
                     //If so change timeEllapsed to new value from slider position and seek
-                    TimeEllapsed = (int)((double)percentagePlayed/1000 * nowPlayingLenght);
+                    TimeEllapsed = (int)((double)_percentagePlayed/1000 * nowPlayingLenght);
                     musicPlayerModel.Seek(TimeEllapsed);
                 }
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Data;
-namespace Music_Player
+namespace Music_Player.Model
 {
     class DirectoryScanner
     {
