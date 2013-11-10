@@ -11,7 +11,6 @@ namespace Music_Player
     class DirectoryScanner
     {
         private static volatile DirectoryScanner instance;
-        // monitor not needed anymore?
         private static object monitor = new Object();
         private Collection <FileSystemWatcher> FSW;
         private DirectoryScanner()
@@ -24,7 +23,16 @@ namespace Music_Player
             //scanning path again
             
         }
-        public static DirectoryScanner Instance { get; private set; }
+        public static DirectoryScanner Instance
+        {
+            get
+            {
+                            instance = new DirectoryScanner();
+                    
+                
+                return instance;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -65,6 +73,8 @@ namespace Music_Player
         /// <returns>DataTable with scanned mp3 files</returns>
         public DataTable ScanRecursive(string path, DataTable dt)
         {
+            DirectoryInfo DI = new DirectoryInfo(path);
+            DBManager dbm = DBManager.Instance;
             if(dt == null)
             {
                 dt = new DataTable();
@@ -75,12 +85,13 @@ namespace Music_Player
                 dt.Columns.Add("Length", typeof(int));
                 dt.Columns.Add("DirectoryID", typeof(int));
                 dt.Columns.Add("Path", typeof(string));
+                dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             }
-            DirectoryInfo DI = new DirectoryInfo(path);
+           
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
-            DBManager dbm = DBManager.Instance;
+            
             dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             if (!hasAccessToFolder(path)) return dt;
