@@ -11,6 +11,7 @@ namespace Music_Player
     class DirectoryScanner
     {
         private static volatile DirectoryScanner instance;
+        // monitor not needed anymore?
         private static object monitor = new Object();
         private Collection <FileSystemWatcher> FSW;
         private DirectoryScanner()
@@ -23,21 +24,7 @@ namespace Music_Player
             //scanning path again
             
         }
-        public static DirectoryScanner Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (monitor)
-                    {
-                        if (instance == null)
-                            instance = new DirectoryScanner();
-                    }
-                }
-                return instance;
-            }
-        }
+        public static DirectoryScanner Instance { get; private set; }
         /// <summary>
         /// 
         /// </summary>
