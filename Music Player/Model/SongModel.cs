@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Music_Player.Model
+﻿namespace Music_Player.Model
 {
     public class SongModel
     {
@@ -24,7 +22,6 @@ namespace Music_Player.Model
         public string LengthString { get; set; }
         public string Path { get; set; }
         public int Rating { get; set; }
-        public Image AlbumArt { get; set; }
         public int DirectoryID { get; set; }
         public int TrackNo { get; set; }
     }

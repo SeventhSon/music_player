@@ -3,20 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:view="clr-namespace:Music_Player.View"
+             xmlns:viewModel="clr-namespace:Music_Player.ViewModel"
              mc:Ignorable="d" 
              DataContext="{Binding Source={StaticResource Locator}, Path=Library}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewModel:GridViewModel}">
+            <view:GridView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:TileViewModel}">
+            <view:TileView />
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
-            <RowDefinition Height="64*"/>
+            <RowDefinition Height="45*"/>
         </Grid.RowDefinitions>
-        <ListBox Margin="0,1,0,0" Grid.Row="1" BorderBrush="#FF979797" Background="#FF979797"/>
+        <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="1"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="Songs" Width="75" Margin="5,0"/>
-            <Button Content="Albums" Width="75" Margin="5,0"/>
-            <Button Content="Artists" Width="75" Margin="5,0"/>
-            <Button Content="Genre" Width="75" Margin="5,0"/>
+            <ToggleButton x:Name="SongsTBtn" IsChecked="{Binding SongsSelected}" Content="Songs" Width="75" Margin="5,0"/>
+            <ToggleButton x:Name="AlbumsTBtn" IsChecked="{Binding AlbumsSelected}" Content="Albums" Width="75" Margin="5,0"/>
+            <ToggleButton x:Name="ArtistsTBtn" IsChecked="{Binding ArtistsSelected}" Content="Artists" Width="75" Margin="5,0"/>
+            <ToggleButton x:Name="GenreTBtn" IsChecked="{Binding GenresSelected}" Content="Genre" Width="75" Margin="5,0"/>
         </StackPanel>
+
     </Grid>
 </UserControl>

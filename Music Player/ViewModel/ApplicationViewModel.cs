@@ -7,6 +7,7 @@ using Music_Player.Model;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Music_Player.Messaging;
 
 namespace Music_Player.ViewModel
 {
@@ -25,26 +26,20 @@ namespace Music_Player.ViewModel
     /// 
     public class ApplicationViewModel : ViewModelBase 
     {
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        /// 
         // Model
-        private AudioPlayer musicPlayerModel;
-        private LibraryManager libraryManagerModel;
+        private MusicPlayer mp;
 
         //ViewModel
         private string _nowPlayingTrack = "Play a song";
         private string _nowPlayingArtist = "";
+        private string _nowPlayingAlbum = "";
         private int nowPlayingLenght = 0;
         private bool _isPlaying = false;
-        private List<SongModel> _songList;
+        private List<PlaylistModel> _playlistList;
         private int _volume = 75;
         private int _percentagePlayed = 0;
         private int _timeEllapsed = 0;
-        private DispatcherTimer timer;
-        private RelayCommand<int> _playCommand;
-        private RelayCommand _addCommand;
+        private DispatcherTimer progressTimer;
         private RelayCommand _nextCommand;
         private RelayCommand _prevCommand;
 
@@ -55,93 +50,81 @@ namespace Music_Player.ViewModel
         private int _selectedNavigation;
         public ApplicationViewModel()
         {
+            //Adding navigation items and their associated viewModels
             Navigation.Add(new NavigationItemModel(new NowPlayingViewModel(),"Now Playing"));
             Navigation.Add(new NavigationItemModel(new LibraryViewModel(),"Library"));
             Navigation.Add(new NavigationItemModel(new SettingsViewModel(),"Settings"));
 
+            //Set the starting page to LibraryView and select it
             ChangeViewModel(Navigation[1]);
             SelectedNavigation = 1;
 
-            //Register for string messages
-            Messenger.Default.Register<string>(this, OnStringMessageReceived);
+            //Register for NowPlaying packets
+            Messenger.Default.Register<NowPlayingPacket>
+            (
+                 this,
+                 (action) => ReceiveMessage(action)
+            );
+            //Register for Playlist packets
+            Messenger.Default.Register<List<PlaylistModel>>
+            (
+                 this,
+                 (action) => ReceiveMessage(action)
+            );
 
-            //Initialize models
-            musicPlayerModel = new AudioPlayer();
-            libraryManagerModel = new LibraryManager();
-
-            //Grab songs
-           // _songList = libraryManagerModel.GetSongs();
+            //Initialize model
+            mp = MusicPlayer.Instance;
+            mp.broadcastPlaylists();
             
-            timer = new DispatcherTimer();
-            timer.Tick += dispatcherTimer_Tick;
-            timer.Interval = new TimeSpan(0, 0, 1);
+            //Setup the progressTimer for updating the slider
+            progressTimer = new DispatcherTimer();
+            progressTimer.Tick += advanceTimeEllapsed;
+            progressTimer.Interval = new TimeSpan(0, 0, 1);
+        }
+        #region functions
+        /// <summary>
+        /// Handle NowPlayingPacket. Fill own properties with received data
+        /// </summary>
+        /// <param name="packet">Object containting every kind of information about the song</param>
+        private void ReceiveMessage(NowPlayingPacket packet)
+        {
+            nowPlayingLenght = packet.Length;
+            NowPlayingTrack = packet.Title.Equals("") ? packet.Path.Split('\\').Last(): packet.Title;
+            NowPlayingArtist = packet.Artist;
+            NowPlayingAlbum = packet.Album;
+        }
+        private void ReceiveMessage(List<PlaylistModel> packet)
+        {
+            PlaylistList = packet;
         }
         /// <summary>
         /// Timer counting the time since the start of the song till the end of it
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dispatcherTimer_Tick(object sender, System.EventArgs e)
+        private void advanceTimeEllapsed(object sender, System.EventArgs e)
         {
             if (TimeEllapsed >= nowPlayingLenght)
             {
-                timer.Stop();
+                progressTimer.Stop();
                 return;
             }
             TimeEllapsed += 1;
         }
-        /// <summary>
-        /// Handler for message received event
-        /// </summary>
-        /// <param name="msg">Content of the string message</param>
-        private void OnStringMessageReceived(string msg)
-        {
-            if (msg.Equals("ReloadLibrary"))
-            {
-               // _songList = libraryManagerModel.GetSongs();
-            }else if (msg.Equals("ReloadTrack"))
-            {
-                TimeEllapsed = 0;
-                timer.Start();
-                IsPlaying = true;
-                NowPlayingArtist = musicPlayerModel.Artist;
-                NowPlayingTrack = musicPlayerModel.Track + " - " + musicPlayerModel.Album;
-                nowPlayingLenght = musicPlayerModel.GetTrackLength();
-            }
-        }
-        /// <summary>
-        /// Set the play queue for the audioplayer
-        /// </summary>
-        /// <param name="selectedIndex">Index of the song to play in the queue</param>
-        private void UpdateQueue(int selectedIndex)
-        {
-            //musicPlayerModel.SetQueue(SongList,selectedIndex);
-        }
-        /// <summary>
-        /// Opens directory browser dialog and scans recursively selected directory
-        /// </summary>
-        private void ScanFolder()
-        {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                DirectoryScanner ds = DirectoryScanner.Instance;
-                libraryManagerModel.AddSongs(ds.ScanRecursive(dialog.SelectedPath,null));
-            }
-        }
+
         /// <summary>
         /// Play next song from the play queue
         /// </summary>
         private void NextSong()
         {
-            musicPlayerModel.Next();
+            mp.NextSong();
         }
         /// <summary>
         /// Play previous song from the play queue
         /// </summary>
         private void PrevSong()
         {
-            musicPlayerModel.Prev();
+            mp.PrevSong();
         }
         private void ChangeViewModel(NavigationItemModel nav)
         {
@@ -150,7 +133,9 @@ namespace Music_Player.ViewModel
 
             CurrentPageViewModel = Navigation.FirstOrDefault(vm => vm == nav).ViewModel;
         }
+        #endregion
         //Bound properties and commands
+        #region commands
         public RelayCommand<NavigationItemModel> NavigateCommand
         {
             get
@@ -161,30 +146,6 @@ namespace Music_Player.ViewModel
                 }
 
                 return _navigateCommand;
-            }
-        }
-        public RelayCommand<int> PlayCommand
-        {
-            get
-            {
-                if (_playCommand == null)
-                {
-                    _playCommand = new RelayCommand<int>(selectedIndex => UpdateQueue(selectedIndex));
-                }
-
-                return _playCommand;
-            }
-        }
-        public RelayCommand AddCommand
-        {
-            get
-            {
-                if (_addCommand == null)
-                {
-                    _addCommand = new RelayCommand(ScanFolder);
-                }
-
-                return _addCommand;
             }
         }
         public RelayCommand NextCommand
@@ -211,6 +172,8 @@ namespace Music_Player.ViewModel
                 return _prevCommand;
             }
         }
+        #endregion
+        #region properties
         public ViewModelBase CurrentPageViewModel
         {
             get
@@ -236,16 +199,18 @@ namespace Music_Player.ViewModel
                 return _navigation;
             }
         }
-        public List<SongModel> SongList
+        public List<PlaylistModel> PlaylistList
         {
             get
             {
-                return _songList;
+                if (_playlistList == null)
+                    _playlistList = new List<PlaylistModel>();
+                return _playlistList;
             }
             set
             {
-                _songList = value;
-                RaisePropertyChanged("SongList");
+                _playlistList = value;
+                RaisePropertyChanged("PlaylistList");
             }
         }
         public int SelectedNavigation
@@ -270,10 +235,24 @@ namespace Music_Player.ViewModel
             }
             set 
             {
-                if (_nowPlayingTrack == value)
+                if (_nowPlayingTrack.Equals(value))
                     return;
                 _nowPlayingTrack = value;
                 RaisePropertyChanged("NowPlayingTrack");
+            }
+        }
+        public string NowPlayingAlbum
+        {
+            get
+            {
+                return _nowPlayingAlbum.Equals("") ? "Unknown Album" : _nowPlayingAlbum;
+            }
+            set
+            {
+                if (_nowPlayingAlbum.Equals(value))
+                    return;
+                _nowPlayingAlbum = value;
+                RaisePropertyChanged("NowPlayingAlbum");
             }
         }
         public string NowPlayingArtist
@@ -284,7 +263,7 @@ namespace Music_Player.ViewModel
             }
             set
             {
-                if (_nowPlayingArtist == value)
+                if (_nowPlayingArtist.Equals(value))
                     return;
                 _nowPlayingArtist = value;
                 RaisePropertyChanged("NowPlayingArtist");
@@ -304,13 +283,13 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("IsPlaying");
                 if (_isPlaying)
                 {
-                    timer.Start();
-                    musicPlayerModel.Play();
+                    progressTimer.Start();
+                    mp.PlaySong();
                 }
                 else
                 {
-                    timer.Stop();
-                    musicPlayerModel.Pause();
+                    progressTimer.Stop();
+                    mp.PauseSong();
                 }
             }
         }
@@ -325,7 +304,7 @@ namespace Music_Player.ViewModel
                 if (_volume == value)
                     return;
                 _volume = value;
-                musicPlayerModel.ChangeVolume(_volume);
+                mp.ChangeSongVolume(_volume);
                 RaisePropertyChanged("Volume");
             }
         }
@@ -363,9 +342,10 @@ namespace Music_Player.ViewModel
                 {
                     //If so change timeEllapsed to new value from slider position and seek
                     TimeEllapsed = (int)((double)_percentagePlayed/1000 * nowPlayingLenght);
-                    musicPlayerModel.Seek(TimeEllapsed);
+                    mp.SeekSong(TimeEllapsed);
                 }
             }
         }
+        #endregion
     }
 }

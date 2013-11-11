@@ -46,6 +46,13 @@ namespace Music_Player.ViewModel
             SimpleIoc.Default.Register<NowPlayingViewModel>();
             SimpleIoc.Default.Register<SettingsViewModel>();
             SimpleIoc.Default.Register<LibraryViewModel>();
+
+            SimpleIoc.Default.Register<AlbumArtViewModel>();
+            SimpleIoc.Default.Register<BiographyViewModel>();
+            SimpleIoc.Default.Register<LyricsViewModel>();
+
+            SimpleIoc.Default.Register<TileViewModel>();
+            SimpleIoc.Default.Register<GridViewModel>();
         }
 
         public ApplicationViewModel Application
@@ -74,6 +81,41 @@ namespace Music_Player.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<LibraryViewModel>();
+            }
+        }
+        public LyricsViewModel Lyrics
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<LyricsViewModel>();
+            }
+        }
+        public AlbumArtViewModel AlbumArt
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<AlbumArtViewModel>();
+            }
+        }
+        public BiographyViewModel Biography
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<BiographyViewModel>();
+            }
+        }
+        public TileViewModel Tile
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<TileViewModel>();
+            }
+        }
+        public GridViewModel Grid
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<GridViewModel>();
             }
         }
         

@@ -7,7 +7,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
         DataContext="{Binding Source={StaticResource Locator}, Path=Application}"
-        Title="ApplicationView" Height="553.76" Width="632.707">
+        Title="Music Player" Height="553.76" Width="632.707">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:LibraryViewModel}">
             <view:LibraryView />
@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="97" />
             </Grid.ColumnDefinitions>
             <Button x:Name="NextBtn" Content="Button" Command="{Binding NextCommand}" HorizontalAlignment="Right" Margin="0,18,10,17" Width="40" RenderTransformOrigin="0.083,0.15" />
-            <ToggleButton x:Name="PlayPauseTgBtn" IsChecked="{Binding IsPlaying, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="ToggleButton" HorizontalAlignment="Center" Margin="58,12,57,13" VerticalAlignment="Center" Width="50" Height="50" RenderTransformOrigin="0.5,0.49"/>
+            <ToggleButton x:Name="PlayPauseTgBtn" IsChecked="{Binding IsPlaying, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Margin="58,12,57,13" VerticalAlignment="Center" Width="50" Height="50" RenderTransformOrigin="0.5,0.49"/>
             <Button x:Name="PrevBtn" Content="Button" Command="{Binding PrevCommand}" HorizontalAlignment="Left" Margin="10,18,0,17" Width="40" RenderTransformOrigin="0.083,0.15" >
                 <Button.RenderTransform>
                     <TransformGroup>
@@ -73,7 +73,7 @@
                     </LinearGradientBrush>
                 </Slider.BorderBrush>
             </Slider>
-            <Rectangle RadiusY="40" Grid.Row="1" Stroke="#FFADB4FF">
+            <Rectangle Grid.Row="1" Stroke="#FFADB4FF">
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFEBECF5" Offset="1"/>
@@ -92,11 +92,6 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDoubleClick">
-                                    <cmd:EventToCommand Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding }"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
                             <TextBlock Text="{Binding Title}" />
                         </StackPanel>
                     </DataTemplate>

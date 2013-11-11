@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Music_Player.Model;
 
 namespace Music_Player.ViewModel
 {
@@ -19,9 +20,33 @@ namespace Music_Player.ViewModel
     /// 
     public class SettingsViewModel : ViewModelBase 
     {
+        private RelayCommand _addCommand;
         public SettingsViewModel()
         {
 
+        }
+        /// <summary>
+        /// Opens directory browser dialog and scans recursively selected directory
+        /// </summary>
+        private void AddFolder()
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                MusicPlayer.Instance.ScanDirectory(dialog.SelectedPath);
+            }
+        }
+        public RelayCommand AddCommand
+        {
+            get
+            {
+                if (_addCommand == null)
+                {
+                    _addCommand = new RelayCommand(AddFolder);
+                }
+
+                return _addCommand;
+            }
         }
     }
 }

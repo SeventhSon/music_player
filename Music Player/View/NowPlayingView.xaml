@@ -4,8 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
+             xmlns:viewModel="clr-namespace:Music_Player.ViewModel"
+             xmlns:view="clr-namespace:Music_Player.View"
              DataContext="{Binding Source={StaticResource Locator}, Path=NowPlaying}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewModel:AlbumArtViewModel}">
+            <view:AlbumArtView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:LyricsViewModel}">
+            <view:LyricsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:BiographyViewModel}">
+            <view:BiographyView />
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -14,11 +27,11 @@
             <RowDefinition Height="45"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ContentControl Content="" Grid.Row="1" Background="#FFC5C5C5"/>
+        <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="1"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="Album Art" Width="75" Margin="5,0"/>
-            <Button Content="Lyrics" Width="75" Margin="5,0"/>
-            <Button Content="Biography" Width="75" Margin="5,0"/>
+            <ToggleButton Content="Album Art" IsChecked="{Binding AlbumArtSelected}" Width="75" Margin="5,0"/>
+            <ToggleButton Content="Lyrics" IsChecked="{Binding LyricsSelected}" Width="75" Margin="5,0"/>
+            <ToggleButton Content="Biography" IsChecked="{Binding BiographySelected}" Width="75" Margin="5,0"/>
         </StackPanel>
 
     </Grid>

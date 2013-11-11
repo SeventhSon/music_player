@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Music_Player.View.GridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Music_Player.Model"
+             mc:Ignorable="d" 
+             DataContext="{Binding Source={StaticResource Locator}, Path=Grid}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <ListBox ItemsSource="{Binding GridData}" Margin="10">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:SongModel}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Artist}" />
+                        <TextBlock Text="{Binding Album}" />
+                        <TextBlock Text="{Binding Year}" />
+                        <TextBlock Text="{Binding Genre}" />
+                        <TextBlock Text="{Binding LengthString}" />
+                        <TextBlock Text="{Binding Rating}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBoxItem>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Title" Command="{Binding SortCommand}" CommandParameter="Title"/>
+                    <Button Content="Artist" Command="{Binding SortCommand}" CommandParameter="Artist"/>
+                    <Button Content="Album" Command="{Binding SortCommand}" CommandParameter="Album"/>
+                    <Button Content="Year" Command="{Binding SortCommand}" CommandParameter="Year"/>
+                    <Button Content="Genre" Command="{Binding SortCommand}" CommandParameter="Genre"/>
+                    <Button Content="Length" Command="{Binding SortCommand}" CommandParameter="Length"/>
+                    <Button Content="Rating" Command="{Binding SortCommand}" CommandParameter="Rating"/>
+                </StackPanel>
+            </ListBoxItem>
+        </ListBox>
+    </Grid>
+</UserControl>
