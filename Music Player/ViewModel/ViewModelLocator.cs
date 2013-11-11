@@ -43,13 +43,37 @@ namespace Music_Player.ViewModel
             ////}
 
             SimpleIoc.Default.Register<ApplicationViewModel>();
+            SimpleIoc.Default.Register<NowPlayingViewModel>();
+            SimpleIoc.Default.Register<SettingsViewModel>();
+            SimpleIoc.Default.Register<LibraryViewModel>();
         }
 
-        public ApplicationViewModel Main
+        public ApplicationViewModel Application
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<ApplicationViewModel>();
+            }
+        }
+        public SettingsViewModel Settings
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
+            }
+        }
+        public NowPlayingViewModel NowPlaying
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<NowPlayingViewModel>();
+            }
+        }
+        public LibraryViewModel Library
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<LibraryViewModel>();
             }
         }
         

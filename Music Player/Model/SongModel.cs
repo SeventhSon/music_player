@@ -2,7 +2,7 @@
 
 namespace Music_Player.Model
 {
-    class SongModel
+    public class SongModel
     {
         public string Title { get; set; }
         public string Artist { get; set; }
@@ -10,8 +10,11 @@ namespace Music_Player.Model
         public int Year { get; set; }
         public string Genre { get; set; }
         public int Length 
-        { 
-            get; 
+        {
+            get 
+            {
+                return Length;
+            }
             set 
             { 
                 Length = value;
@@ -20,7 +23,6 @@ namespace Music_Player.Model
         }
         public string LengthString { get; set; }
         public string Path { get; set; }
-        public string Genre { get; set; }
         public int Rating { get; set; }
         public Image AlbumArt { get; set; }
         public int DirectoryID { get; set; }

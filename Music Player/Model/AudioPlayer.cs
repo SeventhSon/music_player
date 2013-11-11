@@ -28,7 +28,8 @@ namespace Music_Player.Model
         }
         public void ChangeVolume(int volume)
         {
-            volumeStream.Volume = (float)volume / 100;
+            if (volumeStream != null)
+                volumeStream.Volume = (float)volume / 100;
             Volume = (float)volume / 100;
         }
         public void Pause()
@@ -87,13 +88,13 @@ namespace Music_Player.Model
         }
         private void ReloadTrack()
         {
-            if (queue == null || queue.Rows.Count <= Index)
+            if (queue == null || queue.Count <= Index)
                 return;
             CloseTrack();
-            Artist = queue.Rows[Index]["Artist"].ToString();
-            Track = queue.Rows[Index]["Title"].ToString();
-            Album = queue.Rows[Index]["Album"].ToString();
-            mainOutputStream = CreateInputStream(queue.Rows[Index]["Path"].ToString());
+            Artist = queue[Index].Artist;
+            Track = queue[Index].Title;
+            Album = queue[Index].Album;
+            mainOutputStream = CreateInputStream(queue[Index].Path);
             if (mainOutputStream == null) return;
             waveOutDevice.Init(mainOutputStream);
             Index++;
@@ -117,7 +118,7 @@ namespace Music_Player.Model
             }
         }
         
-        public void SetQueue(DataTable q, int i)
+        public void SetQueue(List<SongModel> q, int i)
         {
             CloseTrack();
             //queue = q.Copy();
@@ -136,7 +137,7 @@ namespace Music_Player.Model
             {
                 if (value >= 0)
                 {
-                    index = value % queue.Rows.Count;
+                    index = value % queue.Count;
                 }
             } 
         }

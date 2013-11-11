@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Music_Player;
+using Music_Player.Model;
 using System.Data;
 using System.IO;
 

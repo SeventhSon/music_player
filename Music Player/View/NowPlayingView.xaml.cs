@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,20 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Music_Player.ViewModel;
-using System.Data;
 
-namespace Music_Player
+namespace Music_Player.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for NowPlayingView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class NowPlayingView : UserControl
     {
-        public MainWindow()
+        public NowPlayingView()
         {
             InitializeComponent();
-            Closing += (s, e) => ViewModelLocator.Cleanup();      
         }
     }
 }

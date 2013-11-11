@@ -4,6 +4,8 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using System.Windows.Threading;
 using Music_Player.Model;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Music_Player.ViewModel
@@ -47,12 +49,19 @@ namespace Music_Player.ViewModel
         private RelayCommand _prevCommand;
 
         //ViewModel navigation
-        private List<ViewModelBase> _pageViewModels;
+        private List<NavigationItemModel> _navigation;
         private ViewModelBase _currentPageViewModel;
-        private RelayCommand<ViewModelBase> _changePageCommand;
-
+        private RelayCommand<NavigationItemModel> _navigateCommand;
+        private int _selectedNavigation;
         public ApplicationViewModel()
         {
+            Navigation.Add(new NavigationItemModel(new NowPlayingViewModel(),"Now Playing"));
+            Navigation.Add(new NavigationItemModel(new LibraryViewModel(),"Library"));
+            Navigation.Add(new NavigationItemModel(new SettingsViewModel(),"Settings"));
+
+            ChangeViewModel(Navigation[1]);
+            SelectedNavigation = 1;
+
             //Register for string messages
             Messenger.Default.Register<string>(this, OnStringMessageReceived);
 
@@ -61,7 +70,7 @@ namespace Music_Player.ViewModel
             libraryManagerModel = new LibraryManager();
 
             //Grab songs
-            _songList = libraryManagerModel.GetSongs();
+           // _songList = libraryManagerModel.GetSongs();
             
             timer = new DispatcherTimer();
             timer.Tick += dispatcherTimer_Tick;
@@ -89,7 +98,7 @@ namespace Music_Player.ViewModel
         {
             if (msg.Equals("ReloadLibrary"))
             {
-                _songList = libraryManagerModel.GetSongs();
+               // _songList = libraryManagerModel.GetSongs();
             }else if (msg.Equals("ReloadTrack"))
             {
                 TimeEllapsed = 0;
@@ -106,7 +115,7 @@ namespace Music_Player.ViewModel
         /// <param name="selectedIndex">Index of the song to play in the queue</param>
         private void UpdateQueue(int selectedIndex)
         {
-            musicPlayerModel.SetQueue(SongList,selectedIndex);
+            //musicPlayerModel.SetQueue(SongList,selectedIndex);
         }
         /// <summary>
         /// Opens directory browser dialog and scans recursively selected directory
@@ -134,21 +143,24 @@ namespace Music_Player.ViewModel
         {
             musicPlayerModel.Prev();
         }
-        private void ChangeViewModel(ViewModelBase p)
+        private void ChangeViewModel(NavigationItemModel nav)
         {
+            if (!Navigation.Contains(nav))
+                Navigation.Add(nav);
 
+            CurrentPageViewModel = Navigation.FirstOrDefault(vm => vm == nav).ViewModel;
         }
         //Bound properties and commands
-        public RelayCommand<ViewModelBase> ChangePageCommand
+        public RelayCommand<NavigationItemModel> NavigateCommand
         {
             get
             {
-                if (_changePageCommand == null)
+                if (_navigateCommand == null)
                 {
-                    _changePageCommand = new RelayCommand<ViewModelBase>(page => ChangeViewModel(page));
+                    _navigateCommand = new RelayCommand<NavigationItemModel>(nav => ChangeViewModel(nav));
                 }
 
-                return _changePageCommand;
+                return _navigateCommand;
             }
         }
         public RelayCommand<int> PlayCommand
@@ -214,23 +226,40 @@ namespace Music_Player.ViewModel
                 }
             }
         }
-        public List<ViewModelBase> PageViewModels
+        public List<NavigationItemModel> Navigation
         {
             get
             {
-                if (_pageViewModels == null)
-                    _pageViewModels = new List<ViewModelBase>();
+                if (_navigation == null)
+                    _navigation = new List<NavigationItemModel>();
 
-                return _pageViewModels;
+                return _navigation;
             }
         }
         public List<SongModel> SongList
         {
-            get;
+            get
+            {
+                return _songList;
+            }
             set
             {
                 _songList = value;
                 RaisePropertyChanged("SongList");
+            }
+        }
+        public int SelectedNavigation
+        {
+            get
+            {
+                return _selectedNavigation;
+            }
+            set
+            {
+                if (_selectedNavigation == value)
+                    return;
+                _selectedNavigation = value;
+                RaisePropertyChanged("SelectedNavigation");
             }
         }
         public string NowPlayingTrack

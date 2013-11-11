@@ -19,6 +19,9 @@ namespace Music_Player.ViewModel
     /// 
     public class LibraryViewModel : ViewModelBase 
     {
-        
+        public LibraryViewModel()
+        {
+
+        }
     }
 }

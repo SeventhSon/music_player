@@ -1,6 +1,4 @@
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 
 namespace Music_Player.ViewModel
 {
@@ -16,12 +14,21 @@ namespace Music_Player.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    /// 
-    public class NowPlayingViewModel : ViewModelBase 
+    public class MainViewModel : ViewModelBase
     {
-        public NowPlayingViewModel()
+        /// <summary>
+        /// Initializes a new instance of the MainViewModel class.
+        /// </summary>
+        public MainViewModel()
         {
-
+            ////if (IsInDesignMode)
+            ////{
+            ////    // Code runs in Blend --> create design time data.
+            ////}
+            ////else
+            ////{
+            ////    // Code runs "for real"
+            ////}
         }
     }
 }

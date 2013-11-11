@@ -19,6 +19,9 @@ namespace Music_Player.ViewModel
     /// 
     public class SettingsViewModel : ViewModelBase 
     {
-        
+        public SettingsViewModel()
+        {
+
+        }
     }
 }
