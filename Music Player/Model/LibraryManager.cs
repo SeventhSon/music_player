@@ -15,60 +15,40 @@ namespace Music_Player.Model
         /// <summary>
         /// Create new object of Library Manager and rescans every already scanned directory
         /// </summary>
+        /// 
+        private DBManager dbm;
         public LibraryManager()
         {
-        }
-        /// <summary>
-        /// Queries DB for songs data
-        /// </summary>
-        /// <returns>DataTable with songs info</returns>
-        public DataTable GetSongs()
-        {
-            DBManager dbm = DBManager.Instance;
-            return dbm.executeQuery("Select title as Title, artist as Artist, album as Album, genre as Genre, length as Time,path as Path from songs");
-        }
-        /// <summary>
-        /// Queries DB for directories data
-        /// </summary>
-        /// <returns>DataTable with directiories info</returns>
-        public DataTable GetDirectories()
-        {
-            DBManager dbm = DBManager.Instance;
-            return dbm.executeQuery("Select id as ID, path as Path, last_write_time as LastWriteTime from directories");
-        }
-        /// <summary>
-        /// Queries DB for songs data
-        /// </summary>
-        /// <returns>DataTable with playlists info</returns>
-        public DataTable GetPlaylists()
-        {
-            DBManager dbm = DBManager.Instance;
-            return dbm.executeQuery("Select title as Title from directories");
+            dbm = DBManager.Instance;
         }
 
-        internal void forceBroadcastPlaylists()
+        public void ForceBroadcastPlaylists()
         {
             //throw new NotImplementedException();
         }
 
-        internal void forceBroadcastGenres()
+        public void ForceBroadcastGenres()
         {
             //throw new NotImplementedException();
         }
 
-        internal void forceBroadcastSongs()
+        public void ForceBroadcastSongs()
         {
             //throw new NotImplementedException();
         }
 
-        internal void forceBroadcastArtists()
+        public void ForceBroadcastArtists()
         {
             //throw new NotImplementedException();
         }
 
-        internal void forceBroadcastAlbums()
+        public void ForceBroadcastAlbums()
         {
             //throw new NotImplementedException();
+        }
+        public void SaveSongData(SongModel sm)
+        {
+
         }
     }
 }

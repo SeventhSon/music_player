@@ -7,7 +7,7 @@ namespace Music_Player.Model
 {
     class InfoScrapper
     {
-        internal void forceBroadcastInfo()
+        public void ForceBroadcastInfo()
         {
            // throw new NotImplementedException();
         }

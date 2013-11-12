@@ -38,7 +38,7 @@ namespace Music_Player.Model
         }
         public void broadcastNowPlaying()
         {
-            audioPlayer.forceNowPlayingBroadcast();
+            audioPlayer.ForceNowPlayingBroadcast();
         }
 
         public void setQueue(List<SongModel> SongList, int selectedIndex)
@@ -78,12 +78,12 @@ namespace Music_Player.Model
 
         public void broadcastPlaylists()
         {
-            libraryManager.forceBroadcastPlaylists();
+            libraryManager.ForceBroadcastPlaylists();
         }
 
         public void broadcastInfo()
         {
-            infoScrapper.forceBroadcastInfo();
+            infoScrapper.ForceBroadcastInfo();
         }
 
         public void ScanDirectory(string p)
@@ -94,22 +94,22 @@ namespace Music_Player.Model
 
         public void broadcastGenres()
         {
-            libraryManager.forceBroadcastGenres();
+            libraryManager.ForceBroadcastGenres();
         }
 
         public void broadcastAlbums()
         {
-            libraryManager.forceBroadcastAlbums();
+            libraryManager.ForceBroadcastAlbums();
         }
 
         public void broadcastArtists()
         {
-            libraryManager.forceBroadcastArtists();
+            libraryManager.ForceBroadcastArtists();
         }
 
         public void broadcastSongs()
         {
-            libraryManager.forceBroadcastSongs();
+            libraryManager.ForceBroadcastSongs();
         }
 
         internal void BroadcastDirectories()

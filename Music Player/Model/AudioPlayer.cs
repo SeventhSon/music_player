@@ -100,7 +100,7 @@ namespace Music_Player.Model
             waveOutDevice.Init(mainOutputStream);
             Index++;
             Play();
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
+            ForceNowPlayingBroadcast();
         }
         private void CloseTrack()
         {
@@ -142,7 +142,7 @@ namespace Music_Player.Model
                 }
             } 
         }
-        public void forceNowPlayingBroadcast()
+        public void ForceNowPlayingBroadcast()
         {
             if (queue!=null && queue.Count > Index)
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
