@@ -144,7 +144,7 @@ namespace Music_Player.Model
         }
         public void forceNowPlayingBroadcast()
         {
-            if (queue.Count > Index)
+            if (queue!=null && queue.Count > Index)
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
         }
         public int GetTrackLength()

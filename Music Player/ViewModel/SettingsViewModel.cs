@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Music_Player.Model;
+using System.Collections.Generic;
 
 namespace Music_Player.ViewModel
 {
@@ -21,9 +22,15 @@ namespace Music_Player.ViewModel
     public class SettingsViewModel : ViewModelBase 
     {
         private RelayCommand _addCommand;
+        private List<DirectoryModel> _directories;
         public SettingsViewModel()
         {
-
+            Messenger.Default.Register<List<DirectoryModel>>
+            (
+                 this,
+                 (action) => ReceiveMessage(action)
+            );
+            MusicPlayer.Instance.BroadcastDirectories();
         }
         /// <summary>
         /// Opens directory browser dialog and scans recursively selected directory
@@ -47,6 +54,22 @@ namespace Music_Player.ViewModel
 
                 return _addCommand;
             }
+        }
+        public List<DirectoryModel> Directories
+        {
+            get
+            {
+                return _directories;
+            }
+            set
+            {
+                _directories = value;
+                RaisePropertyChanged("Directories");
+            }
+        }
+        private void ReceiveMessage(List<DirectoryModel> packet)
+        {
+            Directories = packet;
         }
     }
 }

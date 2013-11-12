@@ -10,60 +10,16 @@ namespace Music_Player.Model
 {
     class DirectoryScanner
     {
-        private static volatile DirectoryScanner instance;
-        private static object monitor = new Object();
         private Collection <FileSystemWatcher> FSW;
         public DirectoryScanner()
         {
             FSW = new Collection<FileSystemWatcher>();
         }
 
-        void watcher_FileCreated(object sender, FileSystemEventArgs e)
+        void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             //scanning path again
             
-        }
-        public static DirectoryScanner Instance
-        {
-            get
-            {
-                            instance = new DirectoryScanner();
-                    
-                
-                return instance;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public DataTable Scan(string path)
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Title", typeof(string));
-            dt.Columns.Add("Artist", typeof(string));
-            dt.Columns.Add("Album", typeof(string));
-            dt.Columns.Add("Genre", typeof(string));
-            dt.Columns.Add("Length", typeof(int));
-            dt.Columns.Add("DirectoryID", typeof(int));
-            dt.Columns.Add("Path", typeof(string));
-            DirectoryInfo DI = new DirectoryInfo(path);
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = DI.FullName;
-            FSW.Add(watcher);
-            DBManager dbm = DBManager.Instance;
-            dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + File.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
-            int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
-            foreach (FileInfo file in DI.GetFiles())
-            {
-                if(file.Extension == ".mp3")
-                {
-                    TagLib.File tags = TagLib.File.Create(file.FullName);
-                    dt.Rows.Add(tags.Tag.Title, ConvertStringArrayToString(tags.Tag.AlbumArtists), tags.Tag.Album, ConvertStringArrayToString(tags.Tag.Genres), tags.Properties.Duration.TotalSeconds, dirid,file.FullName);
-                }
-            }
-            return dt;
         }
         /// <summary>
         /// Scans directory given by path. Descends into subdirectories and recursively scan them. Inserts scanned directories in DB
@@ -71,43 +27,41 @@ namespace Music_Player.Model
         /// <param name="path">Location of the directory</param>
         /// <param name="dt">DataTable handle for recursive addition</param>
         /// <returns>DataTable with scanned mp3 files</returns>
-        public DataTable ScanRecursive(string path, DataTable dt)
+        public void ScanRecursive(string path,int dirId = -1)
         {
+            if (!hasAccessToFolder(path)) 
+                return;
+            
             DirectoryInfo DI = new DirectoryInfo(path);
             DBManager dbm = DBManager.Instance;
-            if(dt == null)
-            {
-                dt = new DataTable();
-                dt.Columns.Add("Title", typeof(string));
-                dt.Columns.Add("Artist", typeof(string));
-                dt.Columns.Add("Album", typeof(string));
-                dt.Columns.Add("Genre", typeof(string));
-                dt.Columns.Add("Length", typeof(int));
-                dt.Columns.Add("DirectoryID", typeof(int));
-                dt.Columns.Add("Path", typeof(string));
-                dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
-            }
-           
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = DI.FullName;
+            FileSystemWatcher watcher = new FileSystemWatcher(DI.FullName);
+            watcher.Changed += OnFileChanged;
             FSW.Add(watcher);
-            
-            dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
-            int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
-            if (!hasAccessToFolder(path)) return dt;
+
+            if(dirId == -1)
+            {
+                dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+                dirId = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
+            }
+            string insertString = "";
+            int i = 0;
             foreach (FileInfo file in DI.GetFiles())
             {
                 if(file.Extension == ".mp3")
                 {
+                    if (i > 0)
+                        insertString += ", ";
                     TagLib.File tags = TagLib.File.Create(file.FullName);
-                    dt.Rows.Add(tags.Tag.Title, ConvertStringArrayToString(tags.Tag.AlbumArtists), tags.Tag.Album, ConvertStringArrayToString(tags.Tag.Genres), tags.Properties.Duration.TotalSeconds, dirid,file.FullName);
+                    insertString += " (\""+tags.Tag.Title+"\", \""+ ConvertStringArrayToString(tags.Tag.AlbumArtists)+"\", \""+tags.Tag.Album+"\", \""+ConvertStringArrayToString(tags.Tag.Genres)+"\", "+tags.Properties.Duration.TotalSeconds+", "+dirId+", \""+file.FullName+"\", "+tags.Tag.Track+", "+tags.Tag.Year+") ";
                 }
+                i++;    
             }
+            if (!insertString.Equals(""))
+                dbm.executeNonQuery("Insert or replace into songs (title, artist, album, genre, length, id_directory, path, track_no, year) values" + insertString);
             DirectoryInfo[] subDirectories = DI.GetDirectories();
 
             foreach (DirectoryInfo subDirectory in subDirectories)
-                ScanRecursive(subDirectory.FullName,dt);
-            return dt;
+                ScanRecursive(subDirectory.FullName,dirId);
         }
         private bool hasAccessToFolder(string folderPath)
         {
@@ -140,6 +94,49 @@ namespace Music_Player.Model
                     builder.Append(',');
             }
             return builder.ToString();
+        }
+        public void RescanAll(DataTable dirs)
+        {
+            foreach (DataRow row in dirs.Rows)
+            {
+                string dirId = row["ID"].ToString();
+                string path = row["Path"].ToString();
+                long lastWriteTime = (long)row["LastWriteTime"];
+                try
+                {
+                    DBManager dbm = DBManager.Instance;
+                    if (!Directory.Exists(path))
+                    {
+                        dbm.executeNonQuery("DELETE FROM directories WHERE id=" + dirId);
+                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
+                    }
+                    else if (lastWriteTime < Directory.GetLastWriteTime(path).ToFileTime())
+                    {
+                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
+                        ScanRecursive(path);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+        }
+
+        public void ForceBroadcastDirectories()
+        {
+            DBManager dbm = DBManager.Instance;
+            DataTable dt = dbm.executeQuery("select path,last_write_time from directories");
+            List<DirectoryModel> packet = new List<DirectoryModel>();
+            foreach(DataRow row in dt.Rows)
+            {
+                DirectoryModel dir = new DirectoryModel();
+                dir.Path = row["path"].ToString();
+                dir.LastWrite = (long)row["last_write_time"];
+                dir.NoRemove = true;
+                packet.Add(dir);
+            }
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<List<DirectoryModel>>(packet);
         }
     }
 }

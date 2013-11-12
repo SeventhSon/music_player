@@ -13,11 +13,13 @@ namespace Music_Player.Model
         private LibraryManager libraryManager;
         private DirectoryScanner directoryScanner;
         private AudioPlayer audioPlayer;
+        private InfoScrapper infoScrapper;
         private MusicPlayer()
         {
             libraryManager = new LibraryManager();
             directoryScanner = new DirectoryScanner();
             audioPlayer = new AudioPlayer();
+            infoScrapper = new InfoScrapper();
         }
         public static MusicPlayer Instance
         {
@@ -36,77 +38,83 @@ namespace Music_Player.Model
         }
         public void broadcastNowPlaying()
         {
-            //throw new NotImplementedException();
+            audioPlayer.forceNowPlayingBroadcast();
         }
 
-        internal void setQueue(List<SongModel> SongList, int selectedIndex)
+        public void setQueue(List<SongModel> SongList, int selectedIndex)
         {
-            //throw new NotImplementedException();
+            audioPlayer.SetQueue(SongList,selectedIndex);
         }
 
-        internal void NextSong()
+        public void NextSong()
         {
-            //throw new NotImplementedException();
+            audioPlayer.Next();
         }
 
-        internal void PrevSong()
+        public void PrevSong()
         {
-            //throw new NotImplementedException();
+            audioPlayer.Prev();
         }
 
-        internal void PlaySong()
+        public void PlaySong()
         {
-            //throw new NotImplementedException();
+            audioPlayer.Play();
         }
 
-        internal void PauseSong()
+        public void PauseSong()
         {
-            //throw new NotImplementedException();
+            audioPlayer.Pause();
         }
 
-        internal void ChangeSongVolume(int _volume)
+        public void ChangeSongVolume(int volume)
         {
-            //throw new NotImplementedException();
+            audioPlayer.ChangeVolume(volume);
         }
 
-        internal void SeekSong(int TimeEllapsed)
+        public void SeekSong(int timeEllapsed)
         {
-            //throw new NotImplementedException();
+            audioPlayer.Seek(timeEllapsed);
         }
 
-        internal void broadcastPlaylists()
+        public void broadcastPlaylists()
         {
-            //throw new NotImplementedException();
+            libraryManager.forceBroadcastPlaylists();
         }
 
-        internal void broadcastInfo()
+        public void broadcastInfo()
         {
-            //throw new NotImplementedException();
+            infoScrapper.forceBroadcastInfo();
         }
 
-        internal void ScanDirectory(string p)
+        public void ScanDirectory(string p)
         {
-            //throw new NotImplementedException();
+            directoryScanner.ScanRecursive(p);
+            directoryScanner.ForceBroadcastDirectories();
         }
 
-        internal void broadcastGenres()
+        public void broadcastGenres()
         {
-            //throw new NotImplementedException();
+            libraryManager.forceBroadcastGenres();
         }
 
-        internal void broadcastAlbums()
+        public void broadcastAlbums()
         {
-            //throw new NotImplementedException();
+            libraryManager.forceBroadcastAlbums();
         }
 
-        internal void broadcastArtists()
+        public void broadcastArtists()
         {
-            //throw new NotImplementedException();
+            libraryManager.forceBroadcastArtists();
         }
 
-        internal void broadcastSongs()
+        public void broadcastSongs()
         {
-            //throw new NotImplementedException();
+            libraryManager.forceBroadcastSongs();
+        }
+
+        internal void BroadcastDirectories()
+        {
+            directoryScanner.ForceBroadcastDirectories();
         }
     }
 }
