@@ -9,14 +9,14 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
-            <RowDefinition Height="45*"/>
-            <RowDefinition Height="45"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="16"><Run Language="pl-pl" Text="Scanned folders:"/></TextBlock>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Add directory" Command="{Binding AddCommand}" Margin="10,10,10,10" HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,5,0">
+            <Button Content="Add directory" Command="{Binding AddCommand}" Margin="5,10" HorizontalAlignment="Center"/>
+            <Button Content="Remove unfollowed" Command="{Binding SaveChangesCommand}" Margin="5,10" HorizontalAlignment="Center" />
         </StackPanel>
-        <DataGrid ItemsSource="{Binding Directories}" Margin="0" Grid.Row="1" AutoGenerateColumns="False" BorderBrush="{x:Null}" AlternatingRowBackground="#FF849CFE" CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="None" HeadersVisibility="Column" RowBackground="White">
+        <DataGrid ItemsSource="{Binding Directories}" Grid.Row="1" AutoGenerateColumns="False" BorderBrush="{x:Null}" AlternatingRowBackground="#FF849CFE" CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="None" HeadersVisibility="Column" RowBackground="White">
             <DataGrid.Columns>
                 <DataGridTextColumn ClipboardContentBinding="{x:Null}" MaxWidth="10" MinWidth="10" Width="10"/>
                 <DataGridCheckBoxColumn Binding="{Binding NoRemove}" ClipboardContentBinding="{x:Null}" Header="Follow" Width="Auto"/>
