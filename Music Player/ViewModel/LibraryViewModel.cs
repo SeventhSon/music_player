@@ -35,6 +35,7 @@ namespace Music_Player.ViewModel
             _viewModels.Add(new TileViewModel());
 
             CurrentViewModel = _viewModels[0];
+            SongsSelected = true;
         }
         public ViewModelBase CurrentViewModel
         {

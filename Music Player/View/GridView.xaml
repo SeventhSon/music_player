@@ -8,31 +8,17 @@
              DataContext="{Binding Source={StaticResource Locator}, Path=Grid}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ListBox ItemsSource="{Binding GridData}" Margin="10">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:SongModel}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Title}" />
-                        <TextBlock Text="{Binding Artist}" />
-                        <TextBlock Text="{Binding Album}" />
-                        <TextBlock Text="{Binding Year}" />
-                        <TextBlock Text="{Binding Genre}" />
-                        <TextBlock Text="{Binding LengthString}" />
-                        <TextBlock Text="{Binding Rating}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBoxItem>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Title" Command="{Binding SortCommand}" CommandParameter="Title"/>
-                    <Button Content="Artist" Command="{Binding SortCommand}" CommandParameter="Artist"/>
-                    <Button Content="Album" Command="{Binding SortCommand}" CommandParameter="Album"/>
-                    <Button Content="Year" Command="{Binding SortCommand}" CommandParameter="Year"/>
-                    <Button Content="Genre" Command="{Binding SortCommand}" CommandParameter="Genre"/>
-                    <Button Content="Length" Command="{Binding SortCommand}" CommandParameter="Length"/>
-                    <Button Content="Rating" Command="{Binding SortCommand}" CommandParameter="Rating"/>
-                </StackPanel>
-            </ListBoxItem>
-        </ListBox>
+        <DataGrid HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" MinWidth="10" Width="10"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Year" MinWidth="60" Width="Auto"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Length" MinWidth="50" Width="Auto"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

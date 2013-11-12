@@ -13,7 +13,6 @@ namespace Music_Player.ViewModel
     {
         private List<SongModel> _songList;
         private RelayCommand<int> _playCommand;
-        private RelayCommand<string> _sortCommand;
         /// <summary>
         /// Set the play queue for the audioplayer
         /// </summary>

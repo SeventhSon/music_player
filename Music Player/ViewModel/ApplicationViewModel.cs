@@ -30,8 +30,8 @@ namespace Music_Player.ViewModel
         private MusicPlayer mp;
 
         //ViewModel
-        private string _nowPlayingTrack = "Play a song";
-        private string _nowPlayingArtist = "";
+        private string _nowPlayingTrack = "Select a track";
+        private string _nowPlayingArtist = "To start playing";
         private string _nowPlayingAlbum = "";
         private int nowPlayingLenght = 0;
         private bool _isPlaying = false;

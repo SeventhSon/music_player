@@ -12,21 +12,17 @@
             <RowDefinition Height="45*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="20"><Run Language="pl-pl" Text="Scanned folders"/></TextBlock>
-        <ListBox ItemsSource="{Binding Directories}" Grid.Row="1" BorderBrush="#FFC9C9C9" Background="#FFD1CCCC">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding NoRemove}"/>
-                        <TextBlock Text="{Binding Name}"/>
-                        <TextBlock Text="{Binding Path}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="16"><Run Language="pl-pl" Text="Scanned folders:"/></TextBlock>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="Add directory" Command="{Binding AddCommand}" Margin="10,10,10,10" HorizontalAlignment="Center"/>
-            <Button Content="Save" Command="{Binding SaveCommand}" Margin="10,10,10,10" HorizontalAlignment="Center"/>
         </StackPanel>
+        <DataGrid ItemsSource="{Binding Directories}" Margin="0" Grid.Row="1" AutoGenerateColumns="False" BorderBrush="{x:Null}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" MaxWidth="10" MinWidth="10" Width="10"/>
+                <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Follow" Width="Auto"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Name" MinWidth="100"/>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Path" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

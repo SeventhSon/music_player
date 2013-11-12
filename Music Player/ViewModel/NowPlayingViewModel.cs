@@ -36,6 +36,7 @@ namespace Music_Player.ViewModel
             MusicPlayer.Instance.broadcastInfo();
 
             CurrentViewModel = _viewModels[0];
+            AlbumArtSelected = true;
         }
         public ViewModelBase CurrentViewModel
         {
