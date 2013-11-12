@@ -9,6 +9,7 @@ namespace Music_Player.Model
     public class DirectoryModel
     {
         private string _path;
+        public int Id { get; set; }
         public bool NoRemove { get; set; }
         public string Path
         {

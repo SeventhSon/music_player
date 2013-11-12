@@ -53,8 +53,8 @@ namespace Music_Player.Model
                         insertString += ", ";
                     TagLib.File tags = TagLib.File.Create(file.FullName);
                     insertString += " (\""+tags.Tag.Title+"\", \""+ ConvertStringArrayToString(tags.Tag.AlbumArtists)+"\", \""+tags.Tag.Album+"\", \""+ConvertStringArrayToString(tags.Tag.Genres)+"\", "+tags.Properties.Duration.TotalSeconds+", "+dirId+", \""+file.FullName+"\", "+tags.Tag.Track+", "+tags.Tag.Year+") ";
-                }
-                i++;    
+                    i++;
+                }    
             }
             if (!insertString.Equals(""))
                 dbm.executeNonQuery("Insert or replace into songs (title, artist, album, genre, length, id_directory, path, track_no, year) values" + insertString);
@@ -126,7 +126,7 @@ namespace Music_Player.Model
         public void ForceBroadcastDirectories()
         {
             DBManager dbm = DBManager.Instance;
-            DataTable dt = dbm.executeQuery("select path,last_write_time from directories");
+            DataTable dt = dbm.executeQuery("select * from directories");
             List<DirectoryModel> packet = new List<DirectoryModel>();
             foreach(DataRow row in dt.Rows)
             {
@@ -134,6 +134,7 @@ namespace Music_Player.Model
                 dir.Path = row["path"].ToString();
                 dir.LastWrite = (long)row["last_write_time"];
                 dir.NoRemove = true;
+                dir.Id = Int32.Parse(row["id"].ToString());
                 packet.Add(dir);
             }
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<List<DirectoryModel>>(packet);

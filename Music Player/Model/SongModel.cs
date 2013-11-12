@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Data;
+using System.Linq;
 namespace Music_Player.Model
 {
     public class SongModel
     {
         private int _length;
+private  string _path;
         public SongModel()
         { }
         public SongModel(DataRow row)
@@ -37,7 +39,19 @@ namespace Music_Player.Model
             } 
         }
         public string LengthString { get; set; }
-        public string Path { get; set; }
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value;
+                if (Title.Equals(""))
+                    Title = _path.Split('\\').Last();
+            }
+        }
         public int Rating { get; set; }
         public int DirectoryID { get; set; }
         public int TrackNo { get; set; }

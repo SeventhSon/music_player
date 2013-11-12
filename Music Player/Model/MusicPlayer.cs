@@ -38,7 +38,10 @@ namespace Music_Player.Model
         }
         public void broadcastNowPlaying()
         {
-            audioPlayer.ForceNowPlayingBroadcast();
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.ForceNowPlayingBroadcast();
+                });
         }
 
         public void setQueue(List<SongModel> SongList, int selectedIndex)
@@ -68,7 +71,10 @@ namespace Music_Player.Model
 
         public void ChangeSongVolume(int volume)
         {
-            audioPlayer.ChangeVolume(volume);
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.ChangeVolume(volume);
+                });
         }
 
         public void SeekSong(int timeEllapsed)
@@ -78,12 +84,18 @@ namespace Music_Player.Model
 
         public void broadcastPlaylists()
         {
-            libraryManager.ForceBroadcastPlaylists();
+            Task.Factory.StartNew(() =>
+                {
+                    libraryManager.ForceBroadcastPlaylists();
+                });
         }
 
         public void broadcastInfo()
         {
-            infoScrapper.ForceBroadcastInfo();
+            Task.Factory.StartNew(() =>
+                {
+                    infoScrapper.ForceBroadcastInfo();
+                });
         }
 
         public void ScanDirectory(string p)
@@ -92,33 +104,49 @@ namespace Music_Player.Model
                 {
                     directoryScanner.ScanRecursive(p);
                     directoryScanner.ForceBroadcastDirectories();
+                    libraryManager.ForceBroadcastSongs();
                 });
 
         }
 
         public void broadcastGenres()
         {
-            libraryManager.ForceBroadcastGenres();
+            Task.Factory.StartNew(() =>
+            {
+                libraryManager.ForceBroadcastGenres();
+            });
         }
 
         public void broadcastAlbums()
         {
-            libraryManager.ForceBroadcastAlbums();
+            Task.Factory.StartNew(() =>
+                {
+                    libraryManager.ForceBroadcastAlbums();
+                });
         }
 
         public void broadcastArtists()
         {
-            libraryManager.ForceBroadcastArtists();
+            Task.Factory.StartNew(() =>
+                {
+                    libraryManager.ForceBroadcastArtists();
+                });
         }
 
         public void broadcastSongs()
         {
-            libraryManager.ForceBroadcastSongs();
+            Task.Factory.StartNew(() =>
+                {
+                    libraryManager.ForceBroadcastSongs();
+                });
         }
 
-        internal void BroadcastDirectories()
+        public void BroadcastDirectories()
         {
-            directoryScanner.ForceBroadcastDirectories();
+            Task.Factory.StartNew(() =>
+                {
+                    directoryScanner.ForceBroadcastDirectories();
+                });
         }
     }
 }

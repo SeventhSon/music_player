@@ -22,6 +22,7 @@ namespace Music_Player.ViewModel
     public class SettingsViewModel : ViewModelBase 
     {
         private RelayCommand _addCommand;
+        private RelayCommand _saveChangesCommand;
         private List<DirectoryModel> _directories;
         public SettingsViewModel()
         {
@@ -54,6 +55,34 @@ namespace Music_Player.ViewModel
 
                 return _addCommand;
             }
+        }
+        public RelayCommand SaveChangesCommand
+        {
+            get
+            {
+                if (_saveChangesCommand == null)
+                {
+                    _saveChangesCommand = new RelayCommand(SaveDirectories);
+                }
+
+                return _saveChangesCommand;
+            }
+        }
+
+        private void SaveDirectories()
+        {
+            DBManager dbm = DBManager.Instance;
+            foreach(DirectoryModel dm in Directories)
+            {
+                if(dm.NoRemove==false)
+                {
+                    dbm.executeNonQuery("Delete from songs where id_directory=" + dm.Id);
+                    dbm.executeNonQuery("Delete from directories where id="+dm.Id);
+                }
+            }
+            MusicPlayer.Instance.BroadcastDirectories();
+            MusicPlayer.Instance.broadcastSongs();
+            MusicPlayer.Instance.broadcastAlbums();
         }
         public List<DirectoryModel> Directories
         {
