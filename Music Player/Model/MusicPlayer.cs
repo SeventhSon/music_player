@@ -88,8 +88,12 @@ namespace Music_Player.Model
 
         public void ScanDirectory(string p)
         {
-            directoryScanner.ScanRecursive(p);
-            directoryScanner.ForceBroadcastDirectories();
+            Task.Factory.StartNew(() =>
+                {
+                    directoryScanner.ScanRecursive(p);
+                    directoryScanner.ForceBroadcastDirectories();
+                });
+
         }
 
         public void broadcastGenres()
