@@ -10,6 +10,7 @@ using NAudio.Wave;
 using System.IO;
 using System.Windows;
 using System.Collections;
+using Music_Player.Messaging;
 
 namespace Music_Player.Model
 {
@@ -99,7 +100,7 @@ namespace Music_Player.Model
             waveOutDevice.Init(mainOutputStream);
             Index++;
             Play();
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<string, ViewModel.ApplicationViewModel>("ReloadTrack");
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
         }
         private void CloseTrack()
         {
@@ -122,7 +123,7 @@ namespace Music_Player.Model
         {
             CloseTrack();
             //queue = q.Copy();
-            queue = q;
+            queue = new List<SongModel>(q);
             Index = i;
             ReloadTrack();
         }
@@ -140,6 +141,11 @@ namespace Music_Player.Model
                     index = value % queue.Count;
                 }
             } 
+        }
+        public void forceNowPlayingBroadcast()
+        {
+            if (queue.Count > Index)
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
         }
         public int GetTrackLength()
         {

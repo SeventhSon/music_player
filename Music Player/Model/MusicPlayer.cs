@@ -10,9 +10,14 @@ namespace Music_Player.Model
     {
         private static volatile MusicPlayer _instance;
         private static object monitor = new Object();
+        private LibraryManager libraryManager;
+        private DirectoryScanner directoryScanner;
+        private AudioPlayer audioPlayer;
         private MusicPlayer()
         {
-
+            libraryManager = new LibraryManager();
+            directoryScanner = new DirectoryScanner();
+            audioPlayer = new AudioPlayer();
         }
         public static MusicPlayer Instance
         {

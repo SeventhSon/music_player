@@ -13,7 +13,7 @@ namespace Music_Player.Model
         private static volatile DirectoryScanner instance;
         private static object monitor = new Object();
         private Collection <FileSystemWatcher> FSW;
-        private DirectoryScanner()
+        public DirectoryScanner()
         {
             FSW = new Collection<FileSystemWatcher>();
         }
