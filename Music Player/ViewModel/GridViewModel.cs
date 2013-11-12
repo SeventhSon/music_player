@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Music_Player.Model;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,19 @@ namespace Music_Player.ViewModel
     {
         private List<SongModel> _songList;
         private RelayCommand<int> _playCommand;
+        public GridViewModel()
+        {
+            Messenger.Default.Register<List<SongModel>>
+            (
+                 this,
+                 (action) => ReceiveMessage(action)
+            );
+            MusicPlayer.Instance.broadcastSongs();
+        }
+        private void ReceiveMessage(List<SongModel> packet)
+        {
+            SongList = packet;
+        }
         /// <summary>
         /// Set the play queue for the audioplayer
         /// </summary>

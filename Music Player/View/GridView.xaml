@@ -8,16 +8,16 @@
              DataContext="{Binding Source={StaticResource Locator}, Path=Grid}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <DataGrid HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}">
+        <DataGrid ItemsSource="{Binding SongList}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}" GridLinesVisibility="None" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" MinWidth="10" Width="10"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Year" MinWidth="60" Width="Auto"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Length" MinWidth="50" Width="Auto"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
+                <DataGridTextColumn Binding="{Binding Title}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Artist}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Album}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
+                <DataGridTextColumn Binding="{Binding Year}" ClipboardContentBinding="{x:Null}" Header="Year" MinWidth="60" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Genre}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
+                <DataGridTextColumn Binding="{Binding LengthString}" ClipboardContentBinding="{x:Null}" Header="Length" MinWidth="50" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Rating}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

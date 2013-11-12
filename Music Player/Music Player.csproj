@@ -228,6 +228,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\albumart.jpg" />
+    <Resource Include="Images\album-art-missing.png" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

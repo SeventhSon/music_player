@@ -34,7 +34,11 @@ namespace Music_Player.Model
 
         public void ForceBroadcastSongs()
         {
-            //throw new NotImplementedException();
+            DataTable dt = dbm.executeQuery("Select * from songs");
+            List<SongModel> packet = new List<SongModel>();
+            foreach (DataRow row in dt.Rows)
+                packet.Add(new SongModel(row));
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<List<SongModel>>(packet);    
         }
 
         public void ForceBroadcastArtists()
