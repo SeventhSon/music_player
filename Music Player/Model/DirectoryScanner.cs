@@ -27,14 +27,9 @@ namespace Music_Player.Model
         {
             get
             {
-                if (instance == null)
-                {
-                    lock (monitor)
-                    {
-                        if (instance == null)
                             instance = new DirectoryScanner();
-                    }
-                }
+                    
+                
                 return instance;
             }
         }
@@ -78,6 +73,8 @@ namespace Music_Player.Model
         /// <returns>DataTable with scanned mp3 files</returns>
         public DataTable ScanRecursive(string path, DataTable dt)
         {
+            DirectoryInfo DI = new DirectoryInfo(path);
+            DBManager dbm = DBManager.Instance;
             if(dt == null)
             {
                 dt = new DataTable();
@@ -88,12 +85,13 @@ namespace Music_Player.Model
                 dt.Columns.Add("Length", typeof(int));
                 dt.Columns.Add("DirectoryID", typeof(int));
                 dt.Columns.Add("Path", typeof(string));
+                dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             }
-            DirectoryInfo DI = new DirectoryInfo(path);
+           
             FileSystemWatcher watcher = new FileSystemWatcher();
             watcher.Path = DI.FullName;
             FSW.Add(watcher);
-            DBManager dbm = DBManager.Instance;
+            
             dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
             int dirid = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             if (!hasAccessToFolder(path)) return dt;
