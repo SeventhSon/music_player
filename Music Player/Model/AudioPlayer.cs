@@ -16,6 +16,9 @@ using System.Windows.Media.Imaging;
 
 namespace Music_Player.Model
 {
+    /// <summary>
+    /// Class responsible for playing songs and managing them
+    /// </summary>
     public class AudioPlayer
     {
         private Object monitor = new Object();
@@ -26,11 +29,20 @@ namespace Music_Player.Model
         private List<SongModel> queue;
         private int index=-1;
         private float Volume = 0.75f;
+
+        /// <summary>
+        /// Class constructor
+        /// </summary>
         public AudioPlayer()
         {
             waveOutDevice = new WaveOut();
             waveOutDevice.PlaybackStopped += OnPlaybackStopped;
         }
+
+        /// <summary>
+        /// Changes volume
+        /// </summary>
+        /// <param name="volume"></param>
         public void ChangeVolume(int volume)
         {
             lock (monitor)
@@ -40,6 +52,10 @@ namespace Music_Player.Model
                 Volume = (float)volume / 100;
             }
         }
+
+        /// <summary>
+        /// Pauses music
+        /// </summary>
         public void Pause()
         {
             lock (monitor)
@@ -49,6 +65,9 @@ namespace Music_Player.Model
             }
         }
 
+        /// <summary>
+        /// Plays music
+        /// </summary>
         public void Play()
         {
             lock (monitor)
@@ -57,6 +76,11 @@ namespace Music_Player.Model
                     waveOutDevice.Play();
             }
         }
+
+        /// <summary>
+        /// Seeks music to a given time
+        /// </summary>
+        /// <param name="time">seek time</param>
         public void Seek(int time)
         {
             lock (monitor)
@@ -65,6 +89,10 @@ namespace Music_Player.Model
                     volumeStream.CurrentTime = new TimeSpan(0, 0, time);
             }
         }
+
+        /// <summary>
+        /// Plays next song
+        /// </summary>
         public void Next()
         {
             lock (monitor)
@@ -75,6 +103,10 @@ namespace Music_Player.Model
                 }
             }
         }
+
+        /// <summary>
+        /// Plays previous song
+        /// </summary>
         public void Prev()
         {
             lock (monitor)
@@ -91,6 +123,12 @@ namespace Music_Player.Model
                 }
             }
         }
+
+        /// <summary>
+        /// Opens music file and returns audio stream
+        /// </summary>
+        /// <param name="fileName">path to file</param>
+        /// <returns></returns>
         private WaveStream CreateInputStream(string fileName)
         {
             WaveChannel32 inputStream;
@@ -109,6 +147,10 @@ namespace Music_Player.Model
             volumeStream.PadWithZeroes = false;
             return volumeStream;
         }
+
+        /// <summary>
+        /// Reloads track and all the info about it
+        /// </summary>
         private void ReloadTrack()
         {
             if (queue == null || queue.Count <= Index)
@@ -123,6 +165,10 @@ namespace Music_Player.Model
             ForceNowPlayingBroadcast();
             Index++;
         }
+
+        /// <summary>
+        /// Stops the playing track, closes audio stream and any open music file
+        /// </summary>
         private void CloseTrack()
         {
             if (waveOutDevice != null)
@@ -140,6 +186,11 @@ namespace Music_Player.Model
             }
         }
         
+        /// <summary>
+        /// Creates queue with songs from given list 
+        /// </summary>
+        /// <param name="q"> SongModel list</param>
+        /// <param name="i"> Currently selected song</param>
         public void SetQueue(List<SongModel> q, int i)
         {
             lock (monitor)
@@ -152,6 +203,12 @@ namespace Music_Player.Model
                     CloseTrack();
             }
         }
+
+        /// <summary>
+        /// Reloads track when currently playing music finishes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void OnPlaybackStopped(object sender, EventArgs e)
         {
             lock (monitor)
@@ -159,6 +216,10 @@ namespace Music_Player.Model
                 ReloadTrack();
             }
         }
+
+        /// <summary>
+        /// Gets and sets index of currently choosen song
+        /// </summary>
         public int Index 
         {
             get { return index; } 
@@ -175,6 +236,10 @@ namespace Music_Player.Model
                 }
             } 
         }
+
+        /// <summary>
+        /// Broadcast now playing packet with information about currently playing song
+        /// </summary>
         public void ForceNowPlayingBroadcast()
         {
             lock (monitor)
@@ -186,6 +251,11 @@ namespace Music_Player.Model
                 }
             }
         }
+
+        /// <summary>
+        /// Gets currently playing song length
+        /// </summary>
+        /// <returns></returns>
         public int GetTrackLength()
         {
             lock (monitor)
@@ -195,8 +265,20 @@ namespace Music_Player.Model
                 return 0;
             }
         }
+
+        /// <summary>
+        /// Gets and sets Artist
+        /// </summary>
         public string Artist{get;private set;}
+
+        /// <summary>
+        /// Gets and sets Track
+        /// </summary>
         public string Track { get; private set; }
+
+        /// <summary>
+        /// Gets and sets Album
+        /// </summary>
         public string Album{get;private set;}
     }
 }
