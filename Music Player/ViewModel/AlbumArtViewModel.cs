@@ -18,6 +18,10 @@ namespace Music_Player.ViewModel
     {
         private BitmapImage _albumArtImg;
         private BitmapImage defaultImg;
+
+        /// <summary>
+        /// Class constructor, registering to receive message, setting default album art image
+        /// </summary>
         public AlbumArtViewModel()
         {
             Messenger.Default.Register<NowPlayingPacket>
@@ -29,6 +33,10 @@ namespace Music_Player.ViewModel
             AlbumArtImg = defaultImg;
             MusicPlayer.Instance.BroadcastNowPlaying();
         }
+
+        /// <summary>
+        /// Gets and sets image to be displayed
+        /// </summary>
         public BitmapImage AlbumArtImg
         {
             get { return _albumArtImg; }
@@ -38,6 +46,11 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("AlbumArtImg");
             }
         }
+
+        /// <summary>
+        /// Receives message
+        /// </summary>
+        /// <param name="packet"></param>
         private void ReceiveMessage(NowPlayingPacket packet)
         {
             AlbumArtImg = packet.AlbumArt;
