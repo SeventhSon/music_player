@@ -15,6 +15,10 @@ namespace Music_Player.ViewModel
     {
         private List<SongModel> _songList;
         private RelayCommand<int> _playCommand;
+
+        /// <summary>
+        /// Class constructor, registering to receive messages
+        /// </summary>
         public GridViewModel()
         {
             Messenger.Default.Register<List<SongModel>>
@@ -29,10 +33,20 @@ namespace Music_Player.ViewModel
             );
             MusicPlayer.Instance.BroadcastSongs();
         }
+
+        /// <summary>
+        /// Receives the message with SongModel packet
+        /// </summary>
+        /// <param name="packet">Packet from SongModel list</param>
         private void ReceiveMessage(List<SongModel> packet)
         {
             SongList = packet;
         }
+
+        /// <summary>
+        /// Receives message with now playing packet and starts asynchronous task
+        /// </summary>
+        /// <param name="packet"></param>
         private void ReceiveMessage(NowPlayingPacket packet)
         {
             Task.Factory.StartNew(() =>
@@ -59,6 +73,9 @@ namespace Music_Player.ViewModel
                 });
         }
 
+        /// <summary>
+        /// Gets and sets SongList
+        /// </summary>
         public List<SongModel> SongList
         {
             get
