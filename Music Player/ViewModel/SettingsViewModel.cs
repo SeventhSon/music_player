@@ -76,8 +76,8 @@ namespace Music_Player.ViewModel
             {
                 if(dm.NoRemove==false)
                 {
-                    dbm.executeNonQuery("Delete from songs where id_directory=" + dm.Id);
-                    dbm.executeNonQuery("Delete from directories where id="+dm.Id);
+                    dbm.ExecuteNonQuery("Delete from songs where id_directory=" + dm.Id);
+                    dbm.ExecuteNonQuery("Delete from directories where id="+dm.Id);
                 }
             }
             MusicPlayer.Instance.BroadcastDirectories();

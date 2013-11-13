@@ -36,6 +36,35 @@
     </UserControl.Resources>
     <Grid>
         <DataGrid x:Name="SongsGrid" CellStyle="{StaticResource CellVerticalCenter}" ItemsSource="{Binding SongList}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}" GridLinesVisibility="None" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" RowHeight="30" AlternatingRowBackground="#FFE8E8E8" RowBackground="White" MouseDoubleClick="SongsGrid_MouseDoubleClick">
+            <DataGrid.Resources>
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,0,-2"
+      ToolTip="{Binding RelativeSource={RelativeSource
+      FindAncestor, AncestorType={x:Type DataGridRow}},
+      Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" 
+        Width="{TemplateBinding FontSize}" 
+        Height="{TemplateBinding FontSize}" />
+                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
+        FontWeight="Bold" Foreground="White" 
+        HorizontalAlignment="Center"  />
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>
+            <DataGrid.RowValidationRules>
+                <local:SongModelValidationRule ValidationStep="UpdatedValue"/>
+            </DataGrid.RowValidationRules>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding PlayCommand}" CommandParameter="{Binding ElementName=SongsGrid,Path=SelectedIndex}"/>
@@ -61,13 +90,13 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Artist}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Album}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
-                <DataGridTextColumn Binding="{Binding Year}" ClipboardContentBinding="{x:Null}" Header="Year" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="60" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Genre}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
-                <DataGridTextColumn Binding="{Binding LengthString}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" Header="Length" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="50" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Rating}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Title,ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Artist,ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Album,ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Year,ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Year" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="60" Width="Auto"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Genre,ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding LengthString,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" Header="Length" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="50" Width="Auto"/>
+                <DataGridTextColumn EditingElementStyle="{StaticResource errorStyle}" Binding="{Binding Rating,ValidatesOnExceptions=True,UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
