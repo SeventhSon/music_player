@@ -20,6 +20,11 @@ namespace Music_Player.Model
         private string _title;
         public SongModel()
         { NowPlaying = false; }
+
+        /// <summary>
+        /// Class constructor setting track info from database
+        /// </summary>
+        /// <param name="row">Song row from DataRow</param>
         public SongModel(DataRow row)
         {
             Title = row["title"].ToString();
@@ -33,6 +38,10 @@ namespace Music_Player.Model
             TrackNo = Int32.Parse(row["track_no"].ToString());
             NowPlaying = false;
         }
+
+        /// <summary>
+        /// Gets and sets title
+        /// </summary>
         public string Title
         {
             get
@@ -45,6 +54,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Title");
             }
         }
+
+        /// <summary>
+        /// Gets and sets artist
+        /// </summary>
         public string Artist
         {
             get
@@ -57,6 +70,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Artist");
             }
         }
+
+        /// <summary>
+        /// Gets and sets album
+        /// </summary>
         public string Album
         {
             get
@@ -69,6 +86,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Album");
             }
         }
+
+        /// <summary>
+        /// Gets and sets year
+        /// </summary>
         public int Year
         {
             get
@@ -81,6 +102,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Year");
             }
         }
+
+        /// <summary>
+        /// Gets and sets genre
+        /// </summary>
         public string Genre
         {
             get
@@ -93,6 +118,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Genre");
             }
         }
+
+        /// <summary>
+        /// Gets and sets track length in proper time format
+        /// </summary>
         public int Length 
         {
             get 
@@ -107,7 +136,15 @@ namespace Music_Player.Model
                 OnPropertyChanged("LengthString");
             } 
         }
+
+        /// <summary>
+        /// Gets and sets length string
+        /// </summary>
         public string LengthString { get; set; }
+
+        /// <summary>
+        /// Gets and sets path
+        /// </summary>
         public string Path
         {
             get
@@ -122,6 +159,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("Path");
             }
         }
+
+        /// <summary>
+        /// Gets and sets rating
+        /// </summary>
         public int Rating
         {
             get
@@ -134,6 +175,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("NowPlaying");
             }
         }
+
+        /// <summary>
+        /// Gets and sets directory ID
+        /// </summary>
         public int DirectoryID
         {
             get
@@ -146,6 +191,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("DirectoryID");
             }
         }
+
+        /// <summary>
+        /// Gets and sets track number
+        /// </summary>
         public int TrackNo
         {
             get
@@ -158,6 +207,10 @@ namespace Music_Player.Model
                 OnPropertyChanged("TrackNo");
             }
         }
+
+        /// <summary>
+        /// Gets and sets currently playing song
+        /// </summary>
         public bool NowPlaying
         {
             get
@@ -170,6 +223,11 @@ namespace Music_Player.Model
                 OnPropertyChanged("NowPlaying");
             }
         }
+
+        /// <summary>
+        /// Event handler for property changed
+        /// </summary>
+        /// <param name="name">Name of property changed</param>
           protected void OnPropertyChanged(string name)
           {
           PropertyChangedEventHandler handler = PropertyChanged;
