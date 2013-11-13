@@ -39,7 +39,7 @@ namespace Music_Player.Model
         /// </summary>
         public void ForceBroadcastSongs()
         {
-            DataTable dt = dbm.executeQuery("Select * from songs");
+            DataTable dt = dbm.ExecuteQuery("Select * from songs");
             List<SongModel> packet = new List<SongModel>();
             foreach (DataRow row in dt.Rows)
             {
@@ -60,9 +60,22 @@ namespace Music_Player.Model
         {
             //throw new NotImplementedException();
         }
-        public void SaveSongData(SongModel sm)
+        public void SaveSongData(List<SongModel> SongsToSave)
         {
-
+            foreach(SongModel song in SongsToSave)
+            {
+                string update = "";
+                update += "title=\"" + song.Title + "\", album=\"" + song.Album + "\", artist=\"" + song.Artist + 
+                    "\", year=" + song.Year + ", genre=\"" + song.Genre + "\", rating=" + song.Rating;
+                dbm.ExecuteNonQuery("update or replace songs  set "+update);
+                TagLib.File tags = TagLib.File.Create(song.Path);
+                tags.Tag.Album = song.Album;
+                tags.Tag.AlbumArtists = song.Artist.Split(',');
+                tags.Tag.Title = song.Title;
+                tags.Tag.Year = (uint)song.Year;
+                tags.Tag.Genres = song.Genre.Split(',');
+                tags.Save();
+            }
         }
         private void ReceiveMessage(NowPlayingPacket packet)
         {

@@ -44,8 +44,8 @@ namespace Music_Player.Model
 
             if(dirId == -1)
             {
-                dbm.executeNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
-                dirId = Int32.Parse(((dbm.executeQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
+                dbm.ExecuteNonQuery("Insert or replace into directories (path, last_write_time) values ('" + DI.FullName + "'," + Directory.GetLastWriteTime(DI.FullName).ToFileTime() + ")");
+                dirId = Int32.Parse(((dbm.ExecuteQuery("Select id from directories where path='" + DI.FullName + "'")).Rows[0]["id"]).ToString());
             }
             string insertString = "";
             int i = 0;
@@ -61,7 +61,7 @@ namespace Music_Player.Model
                 }    
             }
             if (!insertString.Equals(""))
-                dbm.executeNonQuery("Insert or replace into songs (title, artist, album, genre, length, id_directory, path, track_no, year) values" + insertString);
+                dbm.ExecuteNonQuery("Insert or replace into songs (title, artist, album, genre, length, id_directory, path, track_no, year) values" + insertString);
             DirectoryInfo[] subDirectories = DI.GetDirectories();
 
             foreach (DirectoryInfo subDirectory in subDirectories)
@@ -122,12 +122,12 @@ namespace Music_Player.Model
                     DBManager dbm = DBManager.Instance;
                     if (!Directory.Exists(path))
                     {
-                        dbm.executeNonQuery("DELETE FROM directories WHERE id=" + dirId);
-                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
+                        dbm.ExecuteNonQuery("DELETE FROM directories WHERE id=" + dirId);
+                        dbm.ExecuteNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
                     }
                     else if (lastWriteTime < Directory.GetLastWriteTime(path).ToFileTime())
                     {
-                        dbm.executeNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
+                        dbm.ExecuteNonQuery("DELETE FROM songs WHERE id_directory=" + dirId);
                         ScanRecursive(path);
                     }
                 }
@@ -144,7 +144,7 @@ namespace Music_Player.Model
         public void ForceBroadcastDirectories()
         {
             DBManager dbm = DBManager.Instance;
-            DataTable dt = dbm.executeQuery("select * from directories");
+            DataTable dt = dbm.ExecuteQuery("select * from directories");
             List<DirectoryModel> packet = new List<DirectoryModel>();
             foreach(DataRow row in dt.Rows)
             {

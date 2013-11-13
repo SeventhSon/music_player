@@ -94,6 +94,8 @@ namespace Music_Player.ViewModel
             NowPlayingAlbum = packet.Album;
             TimeEllapsed = 0;
             IsPlaying = true;
+            if (!progressTimer.IsEnabled)
+                progressTimer.Start();
         }
         private void ReceiveMessage(List<PlaylistModel> packet)
         {
@@ -286,12 +288,14 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("IsPlaying");
                 if (_isPlaying)
                 {
-                    progressTimer.Start();
+                    if(!progressTimer.IsEnabled)
+                        progressTimer.Start();
                     mp.PlaySong();
                 }
                 else
                 {
-                    progressTimer.Stop();
+                    if(progressTimer.IsEnabled)
+                        progressTimer.Stop();
                     mp.PauseSong();
                 }
             }

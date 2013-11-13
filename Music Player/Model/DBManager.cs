@@ -60,7 +60,7 @@ namespace Music_Player.Model
         /// </summary>
         /// <param name="SQL">Select query</param>
         /// <returns>DataTable with results of the query</returns>
-        public DataTable executeQuery(string SQL)
+        public DataTable ExecuteQuery(string SQL)
         {
             DataTable dt = new DataTable();
             try
@@ -87,7 +87,7 @@ namespace Music_Player.Model
         /// </summary>
         /// <param name="SQL">UPDATE, INSERT etc. Query</param>
         /// <returns></returns>
-        public int executeNonQuery(string SQL)
+        public int ExecuteNonQuery(string SQL)
         {
             int RowsAffected = -1;
             try
@@ -148,7 +148,7 @@ namespace Music_Player.Model
         /// <summary>
         /// Allows for reseting the singleton and disposing of the previous instance
         /// </summary>
-        public static void reset()
+        public static void Reset()
         {
             instance = null;
         } 

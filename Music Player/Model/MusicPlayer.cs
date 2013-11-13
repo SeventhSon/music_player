@@ -58,27 +58,42 @@ namespace Music_Player.Model
 
         public void setQueue(List<SongModel> SongList, int selectedIndex)
         {
-            audioPlayer.SetQueue(SongList,selectedIndex);
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.SetQueue(SongList, selectedIndex);
+                });
         }
 
         public void NextSong()
         {
-            audioPlayer.Next();
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.Next();
+                });
         }
 
         public void PrevSong()
         {
-            audioPlayer.Prev();
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.Prev();
+                });
         }
 
         public void PlaySong()
         {
-            audioPlayer.Play();
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.Play();
+                });
         }
 
         public void PauseSong()
         {
-            audioPlayer.Pause();
+            Task.Factory.StartNew(() =>
+                {
+                    audioPlayer.Pause();
+                });
         }
 
         public void ChangeSongVolume(int volume)

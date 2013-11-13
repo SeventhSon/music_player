@@ -8,22 +8,29 @@ using System.Windows.Data;
 
 namespace Music_Player.Model
 {
-       /* public class SongModelValidationRule : ValidationRule
+    public class SongModelValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value,
             System.Globalization.CultureInfo cultureInfo)
         {
-            Course course = (value as BindingGroup).Items[0] as Course;
-            if (course.StartDate > course.EndDate)
+            SongModel song = (value as BindingGroup).Items[0] as SongModel;
+            if (song.Year < 1920 || song.Year > DateTime.Now.Year)
             {
                 return new ValidationResult(false,
-                    "Start Date must be earlier than End Date.");
+                    "Song year tag cannot be less than 1920 nor can it be larger than current year");
             }
-            else
+            else if(song.Rating>255 || song.Rating<0)
             {
-                return ValidationResult.ValidResult;
+                return new ValidationResult(false,
+                    "Rating tag has to be in range [0-255]");
             }
+            else if (song.Album.IndexOf('\"') > -1 || song.Artist.IndexOf('\"') > -1 || song.Genre.IndexOf('\"') > -1 || song.Title.IndexOf('\"') > -1)
+            {
+                return new ValidationResult(false,
+                    "String tags cannot contain \" signs");
+            }
+            return ValidationResult.ValidResult;
         }
-    }*/
+    }
 
 }
