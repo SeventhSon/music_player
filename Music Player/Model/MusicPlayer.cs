@@ -46,7 +46,7 @@ namespace Music_Player.Model
         }
 
         /// <summary>
-        /// Asynchronous
+        /// Asynchronous task calling ForceNowPlayingBroadcast
         /// </summary>
         public void BroadcastNowPlaying()
         {
@@ -56,6 +56,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling SetQueue
+        /// </summary>
         public void setQueue(List<SongModel> SongList, int selectedIndex)
         {
             Task.Factory.StartNew(() =>
@@ -64,6 +67,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling Next
+        /// </summary>
         public void NextSong()
         {
             Task.Factory.StartNew(() =>
@@ -72,6 +78,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling Prev
+        /// </summary>
         public void PrevSong()
         {
             Task.Factory.StartNew(() =>
@@ -80,6 +89,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling Play
+        /// </summary>
         public void PlaySong()
         {
             Task.Factory.StartNew(() =>
@@ -88,6 +100,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling Pause
+        /// </summary>
         public void PauseSong()
         {
             Task.Factory.StartNew(() =>
@@ -96,6 +111,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ChangeVolume 
+        /// </summary>
         public void ChangeSongVolume(int volume)
         {
             Task.Factory.StartNew(() =>
@@ -104,11 +122,17 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Calling Seek function
+        /// </summary>
         public void SeekSong(int timeEllapsed)
         {
             audioPlayer.Seek(timeEllapsed);
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastPlaylists 
+        /// </summary>
         public void BroadcastPlaylists()
         {
             Task.Factory.StartNew(() =>
@@ -117,6 +141,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastInfo
+        /// </summary>
         public void BroadcastInfo()
         {
             Task.Factory.StartNew(() =>
@@ -125,6 +152,10 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task scanning directories, broadcasting directories and songs packet
+        /// </summary>
+        /// <param name="p">Path of directory to scan</param>
         public void ScanDirectory(string p)
         {
             Task.Factory.StartNew(() =>
@@ -136,6 +167,9 @@ namespace Music_Player.Model
 
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastGenres 
+        /// </summary>
         public void BroadcastGenres()
         {
             Task.Factory.StartNew(() =>
@@ -144,6 +178,9 @@ namespace Music_Player.Model
             });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastAlbums 
+        /// </summary>
         public void BroadcastAlbums()
         {
             Task.Factory.StartNew(() =>
@@ -152,6 +189,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastArtists 
+        /// </summary>
         public void BroadcastArtists()
         {
             Task.Factory.StartNew(() =>
@@ -160,6 +200,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastSongs 
+        /// </summary>
         public void BroadcastSongs()
         {
             Task.Factory.StartNew(() =>
@@ -168,6 +211,9 @@ namespace Music_Player.Model
                 });
         }
 
+        /// <summary>
+        /// Asynchronous task calling ForceBroadcastDirectories 
+        /// </summary>
         public void BroadcastDirectories()
         {
             Task.Factory.StartNew(() =>
