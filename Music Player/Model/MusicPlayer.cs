@@ -163,5 +163,15 @@ namespace Music_Player.Model
                     directoryScanner.ForceBroadcastDirectories();
                 });
         }
+
+        public void SaveSong(SongModel selectedItem)
+        {
+            Task.Factory.StartNew(() =>
+                {
+                    List<SongModel> list = new List<SongModel>();
+                    list.Add(selectedItem);
+                    libraryManager.SaveSongData(list);
+                });
+        }
     }
 }

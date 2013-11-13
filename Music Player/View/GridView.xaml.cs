@@ -30,5 +30,10 @@ namespace Music_Player.View
         {
             SongsGrid.CancelEdit();
 	    }
+
+        private void SongsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+
+        }
     }
 }

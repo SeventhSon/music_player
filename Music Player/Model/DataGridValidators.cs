@@ -8,23 +8,15 @@ using System.Windows.Data;
 
 namespace Music_Player.Model
 {
-    public class SongModelValidationRule : ValidationRule
+    public class StringTagValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value,
             System.Globalization.CultureInfo cultureInfo)
         {
-            SongModel song = (value as BindingGroup).Items[0] as SongModel;
-            if (song.Year < 1920 || song.Year > DateTime.Now.Year)
-            {
-                return new ValidationResult(false,
-                    "Song year tag cannot be less than 1920 nor can it be larger than current year");
-            }
-            else if(song.Rating>255 || song.Rating<0)
-            {
-                return new ValidationResult(false,
-                    "Rating tag has to be in range [0-255]");
-            }
-            else if (song.Album.IndexOf('\"') > -1 || song.Artist.IndexOf('\"') > -1 || song.Genre.IndexOf('\"') > -1 || song.Title.IndexOf('\"') > -1)
+            string testedValue = value as string;
+            if (testedValue == null)
+                return ValidationResult.ValidResult;
+            if (testedValue.IndexOf('\"') > -1 || testedValue.IndexOf('\"') > -1 || testedValue.IndexOf('\"') > -1 || testedValue.IndexOf('\"') > -1)
             {
                 return new ValidationResult(false,
                     "String tags cannot contain \" signs");
@@ -32,5 +24,41 @@ namespace Music_Player.Model
             return ValidationResult.ValidResult;
         }
     }
-
+    public class YearValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value,
+            System.Globalization.CultureInfo cultureInfo)
+        {
+            int testedValue;
+            if (value.ToString().Equals(""))
+                value = "0";
+            testedValue = Int32.Parse(value.ToString());
+            if (testedValue > DateTime.Now.Year || testedValue<1900)
+            {
+                return new ValidationResult(false,
+                    "Year tag has to be between 1900 and current year");
+            }
+            return ValidationResult.ValidResult;
+        }
+    }
+    public class RangeValidationRule : ValidationRule
+    {
+        public int Min { get; set; }
+        public int Max { get; set; }
+        public string ErrorMessage { get; set; }
+        public override ValidationResult Validate(object value,
+            System.Globalization.CultureInfo cultureInfo)
+        {
+            int testedValue;
+            if (value.ToString().Equals(""))
+                value = "0";
+            testedValue = Int32.Parse(value.ToString());
+            if (testedValue > Max || testedValue < Min)
+            {
+                return new ValidationResult(false,
+                    ErrorMessage);
+            }
+            return ValidationResult.ValidResult;
+        }
+    }
 }

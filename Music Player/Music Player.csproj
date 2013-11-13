@@ -115,7 +115,6 @@
     <Compile Include="ViewModel\NowPlayingViewModel.cs" />
     <Compile Include="ViewModel\LibraryViewModel.cs" />
     <Compile Include="ViewModel\ApplicationViewModel.cs" />
-    <Compile Include="ViewModel\SongGrid.cs" />
     <Compile Include="ViewModel\TileViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AlbumArtView.xaml.cs">

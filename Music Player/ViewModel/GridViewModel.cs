@@ -15,6 +15,7 @@ namespace Music_Player.ViewModel
     {
         private List<SongModel> _songList;
         private RelayCommand<int> _playCommand;
+        private RelayCommand<SongModel> _saveCommand;
         public GridViewModel()
         {
             Messenger.Default.Register<List<SongModel>>
@@ -84,6 +85,23 @@ namespace Music_Player.ViewModel
 
                 return _playCommand;
             }
+        }
+        public RelayCommand<SongModel> SaveCommand
+        {
+            get
+            {
+                if (_saveCommand == null)
+                {
+                    _saveCommand = new RelayCommand<SongModel>(selectedItem => SaveSongs(selectedItem));
+                }
+
+                return _saveCommand;
+            }
+        }
+
+        private void SaveSongs(SongModel selectedItem)
+        {
+            MusicPlayer.Instance.SaveSong(selectedItem);
         }
     }
 }

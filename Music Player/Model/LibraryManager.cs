@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Music_Player.ViewModel;
 using System.IO;
 using Music_Player.Messaging;
+using System.Threading;
 
 namespace Music_Player.Model
 {
@@ -17,6 +18,7 @@ namespace Music_Player.Model
         /// Create new object of Library Manager and rescans every already scanned directory
         /// </summary>
         /// 
+        private object filelock = new Object();
         private DBManager dbm;
         private string nowPlayingPath ="";
         public LibraryManager()
@@ -59,20 +61,29 @@ namespace Music_Player.Model
         }
         public void SaveSongData(List<SongModel> SongsToSave)
         {
-            foreach(SongModel song in SongsToSave)
-            {
-                string update = "";
-                update += "title=\"" + song.Title + "\", album=\"" + song.Album + "\", artist=\"" + song.Artist + 
-                    "\", year=" + song.Year + ", genre=\"" + song.Genre + "\", rating=" + song.Rating;
-                dbm.ExecuteNonQuery("update or replace songs  set "+update);
-                TagLib.File tags = TagLib.File.Create(song.Path);
-                tags.Tag.Album = song.Album;
-                tags.Tag.AlbumArtists = song.Artist.Split(',');
-                tags.Tag.Title = song.Title;
-                tags.Tag.Year = (uint)song.Year;
-                tags.Tag.Genres = song.Genre.Split(',');
-                tags.Save();
-            }
+                foreach (SongModel song in SongsToSave)
+                {
+                    string update = "";
+                    update += "title=\"" + song.Title + "\", album=\"" + song.Album + "\", artist=\"" + song.Artist +
+                        "\", year=" + song.Year + ", genre=\"" + song.Genre + "\", rating=" + song.Rating + " where path=\"" + song.Path + "\"";
+                    dbm.ExecuteNonQuery("update or replace songs  set " + update);
+                    TagLib.File tags = TagLib.File.Create(song.Path);
+                    tags.Tag.Album = song.Album;
+                    tags.Tag.AlbumArtists = song.Artist.Split(',');
+                    tags.Tag.Title = song.Title;
+                    tags.Tag.Year = (uint)song.Year;
+                    tags.Tag.Genres = song.Genre.Split(',');
+                    try
+                    {
+                        tags.Save();
+                    }catch(System.IO.IOException e)
+                    {
+                        Thread.Sleep(1000);
+                        SaveSongData(SongsToSave);
+                    }
+
+                }
+                ForceBroadcastSongs();
         }
         private void ReceiveMessage(NowPlayingPacket packet)
         {
