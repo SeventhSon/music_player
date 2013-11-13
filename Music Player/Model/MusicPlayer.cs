@@ -36,7 +36,7 @@ namespace Music_Player.Model
                 return _instance;
             }
         }
-        public void broadcastNowPlaying()
+        public void BroadcastNowPlaying()
         {
             Task.Factory.StartNew(() =>
                 {
@@ -82,7 +82,7 @@ namespace Music_Player.Model
             audioPlayer.Seek(timeEllapsed);
         }
 
-        public void broadcastPlaylists()
+        public void BroadcastPlaylists()
         {
             Task.Factory.StartNew(() =>
                 {
@@ -90,7 +90,7 @@ namespace Music_Player.Model
                 });
         }
 
-        public void broadcastInfo()
+        public void BroadcastInfo()
         {
             Task.Factory.StartNew(() =>
                 {
@@ -109,7 +109,7 @@ namespace Music_Player.Model
 
         }
 
-        public void broadcastGenres()
+        public void BroadcastGenres()
         {
             Task.Factory.StartNew(() =>
             {
@@ -117,7 +117,7 @@ namespace Music_Player.Model
             });
         }
 
-        public void broadcastAlbums()
+        public void BroadcastAlbums()
         {
             Task.Factory.StartNew(() =>
                 {
@@ -125,7 +125,7 @@ namespace Music_Player.Model
                 });
         }
 
-        public void broadcastArtists()
+        public void BroadcastArtists()
         {
             Task.Factory.StartNew(() =>
                 {
@@ -133,7 +133,7 @@ namespace Music_Player.Model
                 });
         }
 
-        public void broadcastSongs()
+        public void BroadcastSongs()
         {
             Task.Factory.StartNew(() =>
                 {

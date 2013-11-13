@@ -36,6 +36,12 @@ namespace Music_Player.ViewModel
 
             CurrentViewModel = _viewModels[0];
             SongsSelected = true;
+
+            MusicPlayer.Instance.BroadcastSongs();
+            MusicPlayer.Instance.BroadcastAlbums();
+            MusicPlayer.Instance.BroadcastArtists();
+            MusicPlayer.Instance.BroadcastGenres();
+
         }
         public ViewModelBase CurrentViewModel
         {
@@ -66,7 +72,6 @@ namespace Music_Player.ViewModel
                     AlbumsSelected = false;
                     GenresSelected = false;
                     CurrentViewModel = _viewModels[0];
-                    MusicPlayer.Instance.broadcastSongs();
                 }
                 RaisePropertyChanged("SongsSelected");
             }
@@ -86,7 +91,6 @@ namespace Music_Player.ViewModel
                     AlbumsSelected = false;
                     GenresSelected = false;
                     CurrentViewModel = _viewModels[1];
-                    MusicPlayer.Instance.broadcastArtists();
                 }
                 RaisePropertyChanged("ArtistsSelected");
             }
@@ -106,7 +110,6 @@ namespace Music_Player.ViewModel
                     ArtistsSelected = false;
                     GenresSelected = false;
                     CurrentViewModel = _viewModels[1];
-                    MusicPlayer.Instance.broadcastAlbums();
                 }
                 RaisePropertyChanged("AlbumsSelected");
             }
@@ -126,7 +129,6 @@ namespace Music_Player.ViewModel
                     AlbumsSelected = false;
                     ArtistsSelected = false;
                     CurrentViewModel = _viewModels[1];
-                    MusicPlayer.Instance.broadcastGenres();
                 }
                 RaisePropertyChanged("GenresSelected");
             }

@@ -74,7 +74,7 @@ namespace Music_Player.ViewModel
 
             //Initialize model
             mp = MusicPlayer.Instance;
-            mp.broadcastPlaylists();
+            mp.BroadcastPlaylists();
             
             //Setup the progressTimer for updating the slider
             progressTimer = new DispatcherTimer();
@@ -92,6 +92,8 @@ namespace Music_Player.ViewModel
             NowPlayingTrack = packet.Title.Equals("") ? packet.Path.Split('\\').Last(): packet.Title;
             NowPlayingArtist = packet.Artist;
             NowPlayingAlbum = packet.Album;
+            TimeEllapsed = 0;
+            IsPlaying = true;
         }
         private void ReceiveMessage(List<PlaylistModel> packet)
         {

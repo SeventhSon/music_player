@@ -11,11 +11,15 @@ using System.IO;
 using System.Windows;
 using System.Collections;
 using Music_Player.Messaging;
+using System.Drawing;
+using System.Windows.Media.Imaging;
 
 namespace Music_Player.Model
 {
     public class AudioPlayer
     {
+        private Object monitor = new Object();
+
         IWavePlayer waveOutDevice;
         WaveStream mainOutputStream;
         WaveChannel32 volumeStream;
@@ -29,44 +33,62 @@ namespace Music_Player.Model
         }
         public void ChangeVolume(int volume)
         {
-            if (volumeStream != null)
-                volumeStream.Volume = (float)volume / 100;
-            Volume = (float)volume / 100;
+            lock (monitor)
+            {
+                if (volumeStream != null)
+                    volumeStream.Volume = (float)volume / 100;
+                Volume = (float)volume / 100;
+            }
         }
         public void Pause()
         {
-            if (waveOutDevice.PlaybackState == PlaybackState.Playing && volumeStream!=null)
-                waveOutDevice.Pause();
+            lock (monitor)
+            {
+                if (waveOutDevice.PlaybackState == PlaybackState.Playing && volumeStream != null)
+                    waveOutDevice.Pause();
+            }
         }
 
         public void Play()
         {
-            if (waveOutDevice.PlaybackState != PlaybackState.Playing && volumeStream != null)
-                waveOutDevice.Play();
+            lock (monitor)
+            {
+                if (waveOutDevice.PlaybackState != PlaybackState.Playing && volumeStream != null)
+                    waveOutDevice.Play();
+            }
         }
         public void Seek(int time)
         {
-            if (volumeStream != null)
-                volumeStream.CurrentTime = new TimeSpan(0, 0, time);
+            lock (monitor)
+            {
+                if (volumeStream != null)
+                    volumeStream.CurrentTime = new TimeSpan(0, 0, time);
+            }
         }
         public void Next()
         {
-            if (volumeStream != null) 
+            lock (monitor)
             {
-                waveOutDevice.Stop();
+                if (volumeStream != null)
+                {
+                    waveOutDevice.Stop();
+                }
             }
         }
         public void Prev()
         {
-            if (volumeStream != null && volumeStream.CurrentTime.TotalMilliseconds < 2500)
+            lock (monitor)
             {
-                Index-=2;
-                waveOutDevice.Stop();
-            }
-            else if (volumeStream != null && volumeStream.CurrentTime.TotalMilliseconds >= 2500)
-            {
-                Index--;
-                waveOutDevice.Stop();
+                if (volumeStream != null && volumeStream.CurrentTime.TotalMilliseconds < 2500)
+                {
+                    Index -= 2;
+                    waveOutDevice.Stop();
+                }
+                else if (volumeStream != null && volumeStream.CurrentTime.TotalMilliseconds >= 2500)
+                {
+                    Index--;
+                    waveOutDevice.Stop();
+                }
             }
         }
         private WaveStream CreateInputStream(string fileName)
@@ -91,16 +113,15 @@ namespace Music_Player.Model
         {
             if (queue == null || queue.Count <= Index)
                 return;
-            CloseTrack();
             Artist = queue[Index].Artist;
             Track = queue[Index].Title;
             Album = queue[Index].Album;
             mainOutputStream = CreateInputStream(queue[Index].Path);
             if (mainOutputStream == null) return;
             waveOutDevice.Init(mainOutputStream);
-            Index++;
             Play();
             ForceNowPlayingBroadcast();
+            Index++;
         }
         private void CloseTrack()
         {
@@ -121,37 +142,58 @@ namespace Music_Player.Model
         
         public void SetQueue(List<SongModel> q, int i)
         {
-            CloseTrack();
-            //queue = q.Copy();
-            queue = new List<SongModel>(q);
-            Index = i;
-            ReloadTrack();
+            lock (monitor)
+            {
+                queue = new List<SongModel>(q);
+                Index = i;
+                if (mainOutputStream == null)
+                    ReloadTrack();
+                else
+                    CloseTrack();
+            }
         }
         void OnPlaybackStopped(object sender, EventArgs e)
         {
-            ReloadTrack();
+            lock (monitor)
+            {
+                ReloadTrack();
+            }
         }
         public int Index 
         {
             get { return index; } 
             private set 
             {
-                if (value >= 0)
+                lock (monitor)
                 {
-                    index = value % queue.Count;
+                    if (value >= 0)
+                    {
+                        index = value % queue.Count;
+                    }
+                    else if (value * -1 < queue.Count)
+                        index = queue.Count - value;
                 }
             } 
         }
         public void ForceNowPlayingBroadcast()
         {
-            if (queue!=null && queue.Count > Index)
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(new NowPlayingPacket(queue[Index]));
+            lock (monitor)
+            {
+                if (queue != null)
+                {
+                    NowPlayingPacket packet = new NowPlayingPacket(queue[Index]);
+                    GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<NowPlayingPacket>(packet);
+                }
+            }
         }
         public int GetTrackLength()
         {
-            if (volumeStream != null)
-                return (int) volumeStream.TotalTime.TotalSeconds;
-            return 0;
+            lock (monitor)
+            {
+                if (volumeStream != null)
+                    return (int)volumeStream.TotalTime.TotalSeconds;
+                return 0;
+            }
         }
         public string Artist{get;private set;}
         public string Track { get; private set; }

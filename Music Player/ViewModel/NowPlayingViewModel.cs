@@ -33,7 +33,7 @@ namespace Music_Player.ViewModel
             _viewModels.Add(new BiographyViewModel());
             _viewModels.Add(new LyricsViewModel());
 
-            MusicPlayer.Instance.broadcastInfo();
+            MusicPlayer.Instance.BroadcastInfo();
 
             CurrentViewModel = _viewModels[0];
             AlbumArtSelected = true;

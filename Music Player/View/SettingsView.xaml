@@ -16,13 +16,37 @@
             <Button Content="Add directory" Command="{Binding AddCommand}" Margin="5,10" HorizontalAlignment="Center"/>
             <Button Content="Remove unfollowed" Command="{Binding SaveChangesCommand}" Margin="5,10" HorizontalAlignment="Center" />
         </StackPanel>
-        <DataGrid ItemsSource="{Binding Directories}" Grid.Row="1" AutoGenerateColumns="False" BorderBrush="{x:Null}" AlternatingRowBackground="#FF849CFE" CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="None" HeadersVisibility="Column" RowBackground="White">
+        <DataGrid VerticalContentAlignment="Center" ItemsSource="{Binding Directories}" Grid.Row="1" AutoGenerateColumns="False" BorderBrush="{x:Null}" AlternatingRowBackground="#FF849CFE" CanUserAddRows="False" CanUserDeleteRows="False" GridLinesVisibility="None" HeadersVisibility="Column" RowBackground="White" RowHeight="30" CanUserResizeRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn ClipboardContentBinding="{x:Null}" MaxWidth="10" MinWidth="10" Width="10"/>
-                <DataGridCheckBoxColumn Binding="{Binding NoRemove}" ClipboardContentBinding="{x:Null}" Header="Follow" Width="Auto"/>
-                <DataGridTextColumn Binding="{Binding Name}" ClipboardContentBinding="{x:Null}" Header="Name" MinWidth="100"/>
-                <DataGridTextColumn Binding="{Binding Path}" ClipboardContentBinding="{x:Null}" Header="Path" Width="*"/>
-                <DataGridTextColumn Binding="{Binding LastWrite}" ClipboardContentBinding="{x:Null}" Header="Last write time"/>
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Follow" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding NoRemove,UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Name" MinWidth="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Path" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Path}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Last write time">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding LastWrite}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

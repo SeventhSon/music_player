@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Music_Player.Messaging;
 using Music_Player.Model;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,27 @@ namespace Music_Player.ViewModel
                  this,
                  (action) => ReceiveMessage(action)
             );
-            MusicPlayer.Instance.broadcastSongs();
+            Messenger.Default.Register<NowPlayingPacket>
+            (
+                 this,
+                 (action) => ReceiveMessage(action)
+            );
+            MusicPlayer.Instance.BroadcastSongs();
         }
         private void ReceiveMessage(List<SongModel> packet)
         {
             SongList = packet;
+        }
+        private void ReceiveMessage(NowPlayingPacket packet)
+        {
+            Task.Factory.StartNew(() =>
+                {
+                    foreach (SongModel sm in SongList)
+                        if (packet.Path.Equals(sm.Path))
+                            sm.NowPlaying = true;
+                        else
+                            sm.NowPlaying = false;
+                });
         }
         /// <summary>
         /// Set the play queue for the audioplayer
@@ -33,7 +50,13 @@ namespace Music_Player.ViewModel
         /// <param name="selectedIndex">Index of the song to play in the queue</param>
         private void UpdateQueue(int selectedIndex)
         {
-            MusicPlayer.Instance.setQueue(SongList, selectedIndex);
+            Task.Factory.StartNew(() =>
+                {
+                    foreach (SongModel sm in SongList)
+                        sm.NowPlaying = false;
+                    SongList[selectedIndex].NowPlaying = true;
+                    MusicPlayer.Instance.setQueue(SongList, selectedIndex);
+                });
         }
 
         public List<SongModel> SongList

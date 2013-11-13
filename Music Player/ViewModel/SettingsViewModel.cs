@@ -81,8 +81,8 @@ namespace Music_Player.ViewModel
                 }
             }
             MusicPlayer.Instance.BroadcastDirectories();
-            MusicPlayer.Instance.broadcastSongs();
-            MusicPlayer.Instance.broadcastAlbums();
+            MusicPlayer.Instance.BroadcastSongs();
+            MusicPlayer.Instance.BroadcastAlbums();
         }
         public List<DirectoryModel> Directories
         {

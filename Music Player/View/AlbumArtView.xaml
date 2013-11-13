@@ -7,9 +7,9 @@
              DataContext="{Binding Source={StaticResource Locator}, Path=AlbumArt}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <BitmapImage x:Key="MissingArtwork" UriSource="../Images/albumart.jpg" />
+        <BitmapImage x:Key="Missing" UriSource="../Images/albumart.jpg" />
     </UserControl.Resources>
     <Grid>
-        <Image x:Name="AlbumArtImg" Source="{StaticResource ResourceKey=MissingArtwork}" Margin="10"/>
+        <Image x:Name="AlbumArtImg" Source="{Binding AlbumArtImg}" Margin="10"/>
     </Grid>
 </UserControl>
