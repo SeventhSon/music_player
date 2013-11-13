@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 namespace Music_Player.Model
 {
-    class DirectoryScanner
+    public class DirectoryScanner
     {
         private Collection <FileSystemWatcher> FSW;
         public DirectoryScanner()
