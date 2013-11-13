@@ -10,6 +10,9 @@ using System.Windows;
 
 namespace Music_Player.Model
 {
+    /// <summary>
+    /// DBManager class, which cannot be inherited by other
+    /// </summary>
     public sealed class DBManager
     {
         private static volatile DBManager instance;
