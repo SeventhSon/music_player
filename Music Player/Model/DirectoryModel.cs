@@ -9,6 +9,7 @@ namespace Music_Player.Model
     public class DirectoryModel
     {
         private string _path;
+        private long _lastWrite;
         public int Id { get; set; }
         public bool NoRemove { get; set; }
         public string Path
@@ -24,7 +25,19 @@ namespace Music_Player.Model
             }
         }
         public string Name { get; set; }
-        public long LastWrite { get; set; }
+        public long LastWrite
+        {
+            get
+            {
+                return _lastWrite;
+            }
+            set
+            {
+                _lastWrite = value;
+                LastWriteString = new DateTime(LastWrite).ToString();
+            }
+        }
+        public string LastWriteString { get; set; }
     }
 
 }

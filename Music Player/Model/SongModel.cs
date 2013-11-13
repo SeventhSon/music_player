@@ -10,6 +10,14 @@ namespace Music_Player.Model
         private  string _path;
         private bool _nowPlaying;
         public event PropertyChangedEventHandler PropertyChanged;
+        private int _trackno;
+        private int _directoryid;
+        private int _rating;
+        private string _genre;
+        private int _year;
+        private string _album;
+        private string _artist;
+        private string _title;
         public SongModel()
         { NowPlaying = false; }
         public SongModel(DataRow row)
@@ -25,11 +33,66 @@ namespace Music_Player.Model
             TrackNo = Int32.Parse(row["track_no"].ToString());
             NowPlaying = false;
         }
-        public string Title { get; set; }
-        public string Artist { get; set; }
-        public string Album { get; set; }
-        public int Year { get; set; }
-        public string Genre { get; set; }
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                _title = value;
+                OnPropertyChanged("Title");
+            }
+        }
+        public string Artist
+        {
+            get
+            {
+                return _artist;
+            }
+            set
+            {
+                _artist = value;
+                OnPropertyChanged("Artist");
+            }
+        }
+        public string Album
+        {
+            get
+            {
+                return _album;
+            }
+            set
+            {
+                _album = value;
+                OnPropertyChanged("Album");
+            }
+        }
+        public int Year
+        {
+            get
+            {
+                return _year;
+            }
+            set
+            {
+                _year = value;
+                OnPropertyChanged("Year");
+            }
+        }
+        public string Genre
+        {
+            get
+            {
+                return _genre;
+            }
+            set
+            {
+                _genre = value;
+                OnPropertyChanged("Genre");
+            }
+        }
         public int Length 
         {
             get 
@@ -40,6 +103,8 @@ namespace Music_Player.Model
             { 
                 _length = value;
                 LengthString = _length % 60 < 10 ? _length / 60 + ":0" + _length % 60 : _length / 60 + ":" + _length % 60;
+                OnPropertyChanged("Length");
+                OnPropertyChanged("LengthString");
             } 
         }
         public string LengthString { get; set; }
@@ -54,11 +119,45 @@ namespace Music_Player.Model
                 _path = value;
                 if ((Title == null || Title.Equals("")) && _path!=null)
                     Title = _path.Split('\\').Last();
+                OnPropertyChanged("Path");
             }
         }
-        public int Rating { get; set; }
-        public int DirectoryID { get; set; }
-        public int TrackNo { get; set; }
+        public int Rating
+        {
+            get
+            {
+                return _rating;
+            }
+            set
+            {
+                _rating = value;
+                OnPropertyChanged("NowPlaying");
+            }
+        }
+        public int DirectoryID
+        {
+            get
+            {
+                return _directoryid;
+            }
+            set
+            {
+                _directoryid = value;
+                OnPropertyChanged("DirectoryID");
+            }
+        }
+        public int TrackNo
+        {
+            get
+            {
+                return _trackno;
+            }
+            set
+            {
+                _trackno = value;
+                OnPropertyChanged("TrackNo");
+            }
+        }
         public bool NowPlaying
         {
             get

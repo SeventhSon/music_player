@@ -61,7 +61,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Title}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Artist}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Album}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
                 <DataGridTextColumn Binding="{Binding Year}" ClipboardContentBinding="{x:Null}" Header="Year" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="60" Width="Auto"/>

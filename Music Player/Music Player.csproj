@@ -95,6 +95,7 @@
     </ApplicationDefinition>
     <Compile Include="Messaging\InfoPacket.cs" />
     <Compile Include="Messaging\NowPlayingPacket.cs" />
+    <Compile Include="Model\DataGridValidators.cs" />
     <Compile Include="Model\DirectoryModel.cs" />
     <Compile Include="Model\InfoScrapper.cs" />
     <Compile Include="Model\LibraryManager.cs" />

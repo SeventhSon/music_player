@@ -33,17 +33,17 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Path" Width="*">
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Path" Width="100*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock VerticalAlignment="Center" Text="{Binding Path}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Last write time">
+                <DataGridTemplateColumn ClipboardContentBinding="{x:Null}" Header="Last write time" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock VerticalAlignment="Center" Text="{Binding LastWrite}"/>
+                            <TextBlock VerticalAlignment="Center" Text="{Binding LastWriteString}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
