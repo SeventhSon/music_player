@@ -15,20 +15,23 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="96"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="89*"/>
-            <RowDefinition Height="211*"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <ItemsControl x:Name="PhotoList" ItemsSource="{Binding Images}" ItemTemplate="{StaticResource PhotoItem}" Margin="10" >
+        <ItemsControl x:Name="PhotoList" ItemsSource="{Binding Images}" ItemTemplate="{StaticResource PhotoItem}" Margin="10" Grid.Column="1" >
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal"/>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <StackPanel Margin="10" Grid.Row="1">
-            <TextBlock x:Name="TitleTB" HorizontalAlignment="Center" Margin="10" TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Top" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="20" Grid.Row="1"/>
-            <TextBlock x:Name="DescriptionTB" TextWrapping="Wrap" Text="{Binding Description}" FontFamily="Tw Cen MT" FontSize="14"/>
+        <StackPanel Margin="10">
+            <TextBlock x:Name="TitleTB" HorizontalAlignment="Center" Margin="10" TextWrapping="Wrap" Text="{Binding Title}" VerticalAlignment="Top" FontFamily="Tw Cen MT" FontWeight="Bold" FontSize="20" Grid.Row="1" Foreground="White"/>
+            <TextBlock x:Name="DescriptionTB" TextWrapping="Wrap" Text="{Binding Description}" FontFamily="Tw Cen MT" FontSize="14" Foreground="White"/>
         </StackPanel>
 
     </Grid>

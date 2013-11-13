@@ -11,9 +11,31 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BitmapImage x:Key="Playing" UriSource="../Images/nowplayingicon.png" />
+        <Style x:Key="CellVerticalCenter" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+         </Style>
+        <Style x:Key="CellHorizontalCenter" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+         </Style>
     </UserControl.Resources>
     <Grid>
-        <DataGrid x:Name="SongsGrid" ItemsSource="{Binding SongList}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}" GridLinesVisibility="None" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+        <DataGrid x:Name="SongsGrid" CellStyle="{StaticResource CellVerticalCenter}" ItemsSource="{Binding SongList}" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderBrush="{x:Null}" GridLinesVisibility="None" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" RowHeight="30" AlternatingRowBackground="#FFE8E8E8" RowBackground="White" MouseDoubleClick="SongsGrid_MouseDoubleClick">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding PlayCommand}" CommandParameter="{Binding ElementName=SongsGrid,Path=SelectedIndex}"/>
@@ -42,9 +64,9 @@
                 <DataGridTextColumn Binding="{Binding Title}" ClipboardContentBinding="{x:Null}" Header="Title" MinWidth="120" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Artist}" ClipboardContentBinding="{x:Null}" Header="Artist" MinWidth="90" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Album}" ClipboardContentBinding="{x:Null}" Header="Album" Width="Auto" MinWidth="90"/>
-                <DataGridTextColumn Binding="{Binding Year}" ClipboardContentBinding="{x:Null}" Header="Year" MinWidth="60" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding Year}" ClipboardContentBinding="{x:Null}" Header="Year" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="60" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Genre}" ClipboardContentBinding="{x:Null}" Header="Genre" Width="Auto" MinWidth="60"/>
-                <DataGridTextColumn Binding="{Binding LengthString}" ClipboardContentBinding="{x:Null}" Header="Length" MinWidth="50" Width="Auto"/>
+                <DataGridTextColumn Binding="{Binding LengthString}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" Header="Length" CellStyle="{StaticResource CellHorizontalCenter}" MinWidth="50" Width="Auto"/>
                 <DataGridTextColumn Binding="{Binding Rating}" ClipboardContentBinding="{x:Null}" Header="Rating" MinWidth="35" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Music_Player.View
 {
@@ -24,5 +25,10 @@ namespace Music_Player.View
         {
             InitializeComponent();
         }
+
+        private void SongsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            SongsGrid.CancelEdit();
+	    }
     }
 }

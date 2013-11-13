@@ -226,6 +226,7 @@ namespace Music_Player.ViewModel
                 if (_selectedNavigation == value)
                     return;
                 _selectedNavigation = value;
+                ChangeViewModel(Navigation[SelectedNavigation]);
                 RaisePropertyChanged("SelectedNavigation");
             }
         }

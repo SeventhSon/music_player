@@ -20,87 +20,58 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <Grid>
-            <Grid.Resources>
-                <local:IntToTimeConverter x:Key="IntToTimeConverter"/>
-            </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="75" />
-                <RowDefinition Height="400*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="165" />
-                <ColumnDefinition MinWidth="100" />
-                <ColumnDefinition Width="97" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="NextBtn" Content="Button" Command="{Binding NextCommand}" HorizontalAlignment="Right" Margin="0,18,10,17" Width="40" RenderTransformOrigin="0.083,0.15" />
-            <ToggleButton x:Name="PlayPauseTgBtn" IsChecked="{Binding IsPlaying, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Margin="58,12,57,13" VerticalAlignment="Center" Width="50" Height="50" RenderTransformOrigin="0.5,0.49"/>
-            <Button x:Name="PrevBtn" Content="Button" Command="{Binding PrevCommand}" HorizontalAlignment="Left" Margin="10,18,0,17" Width="40" RenderTransformOrigin="0.083,0.15" >
-                <Button.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="180"/>
-                        <TranslateTransform X="33.5" Y="28"/>
-                    </TransformGroup>
-                </Button.RenderTransform>
-            </Button>
-            <Slider x:Name="TimeSlider" Grid.Column="1" Margin="10,52,10,0" Foreground="#FF7E7EFF" Maximum="1000" Value="{Binding PercentagePlayed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                <Slider.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="#FF867AFF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Slider.Background>
-                <Slider.BorderBrush>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="#FF7E7EFF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Slider.BorderBrush>
-            </Slider>
-            <Slider x:Name="VolumeSlider" Grid.Column="2" Margin="10,52,10,1" Foreground="#FF7E7EFF" Value="{Binding Volume, UpdateSourceTrigger=PropertyChanged}" Maximum="100" RenderTransformOrigin="0.486,0.44">
-                <Slider.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="#FF867AFF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Slider.Background>
-                <Slider.BorderBrush>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="#FF7E7EFF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Slider.BorderBrush>
-            </Slider>
-            <Rectangle Grid.Row="1" Stroke="#FFADB4FF">
-                <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFEBECF5" Offset="1"/>
-                        <GradientStop Color="#FFEBECF5"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-            <TextBlock x:Name="ArtistTB" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Foreground="#FF7E7EFF" FontFamily="Tw Cen MT Condensed" FontSize="16"><Run Language="pl-pl" Text="{Binding NowPlayingArtist}"/></TextBlock>
-            <TextBlock x:Name="TitleTB" Grid.Column="1" Margin="10,24,103,18" TextWrapping="Wrap" Foreground="#FF7E7EFF" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667"><Run Language="pl-pl" Text="{Binding NowPlayingTrack}"/></TextBlock>
-            <ListBox x:Name="NavigationBox" SelectedIndex="{Binding SelectedNavigation}" ItemsSource="{Binding Navigation}" HorizontalAlignment="Left" Height="166" Grid.Row="1" VerticalAlignment="Top" Width="165" Background="#00000000" BorderBrush="{x:Null}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <cmd:EventToCommand Command="{Binding NavigateCommand}" CommandParameter="{Binding ElementName=NavigationBox,Path=SelectedItem}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Title}" Margin="10,5,10,5" FontFamily="Tw Cen MT" FontSize="24" FontWeight="Bold" Foreground="#FF7E7EFF" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <TextBlock x:Name="TimeTB" TextAlignment="Right" Grid.Column="1" Height="33" Margin="0,25,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#FF7E7EFF" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667" HorizontalAlignment="Right" Width="79"><Run Language="pl-pl" Text="{Binding Path=TimeEllapsed, Converter={StaticResource IntToTimeConverter},Mode=OneWay}"/></TextBlock>
-            <ContentControl Content="{Binding CurrentPageViewModel}" Grid.Column="1" Grid.Row="1" Margin="0" Grid.ColumnSpan="2"/>
-            <ListBox x:Name="PlaylistBox" ItemsSource="{Binding Playlists}" Margin="0,198,0,0" Grid.Row="1" BorderBrush="{x:Null}" Background="{x:Null}"/>
-            <TextBlock HorizontalAlignment="Left" Margin="10,171,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Playlists:" VerticalAlignment="Top" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="20" FontWeight="Bold" Foreground="#FF7E7EFF"/>
-        </Grid>
+        <Grid.Resources>
+            <local:IntToTimeConverter x:Key="IntToTimeConverter"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75" />
+            <RowDefinition Height="400*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="177" />
+            <ColumnDefinition MinWidth="100" />
+            <ColumnDefinition Width="97" />
+        </Grid.ColumnDefinitions>
+        <Rectangle Grid.ColumnSpan="3">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="White" Offset="0.06"/>
+                    <GradientStop Color="#FFC7B18C" Offset="0.525"/>
+                    <GradientStop Color="#FFEDE6D4" Offset="0.717"/>
+                    <GradientStop Color="#FFE0D4C0" Offset="0.453"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Button x:Name="NextBtn" Content=">>" Command="{Binding NextCommand}" HorizontalAlignment="Right" Margin="0,18,10,17" Width="40" RenderTransformOrigin="0.083,0.15" />
+        <ToggleButton x:Name="PlayPauseTgBtn" Content=">" IsChecked="{Binding IsPlaying, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Margin="65,12,62,13" VerticalAlignment="Center" Width="50" Height="50" RenderTransformOrigin="0.5,0.49"/>
+        <Button x:Name="PrevBtn" Content="&gt;&gt;" Command="{Binding PrevCommand}" HorizontalAlignment="Left" Margin="10,18,0,17" Width="40" RenderTransformOrigin="0.083,0.15" >
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="180"/>
+                    <TranslateTransform X="33.5" Y="28"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Slider x:Name="TimeSlider" Grid.Column="1" Margin="0,52,0,0" Foreground="Black" Maximum="1000" Value="{Binding PercentagePlayed,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Background="{x:Null}"/>
+        <Slider x:Name="VolumeSlider" Grid.Column="2" Margin="10,52,10,1" Foreground="Black" Value="{Binding Volume, UpdateSourceTrigger=PropertyChanged}" Maximum="100" RenderTransformOrigin="0.486,0.44" Background="{x:Null}"/>
+        <Rectangle Grid.Row="1" Fill="#FF714430"/>
+        <TextBlock x:Name="ArtistTB" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="217" Foreground="Black" FontFamily="Tw Cen MT Condensed" FontSize="16"><Run Language="pl-pl" Text="{Binding NowPlayingArtist}"/></TextBlock>
+        <TextBlock x:Name="TitleTB" Grid.Column="1" Margin="10,24,103,18" TextWrapping="Wrap" Foreground="Black" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667"><Run Language="pl-pl" Text="{Binding NowPlayingTrack}"/></TextBlock>
+        <ListBox x:Name="NavigationBox" SelectedIndex="{Binding SelectedNavigation}" ItemsSource="{Binding Navigation}" Height="166" Grid.Row="1" VerticalAlignment="Top" Margin="0" Background="#00000000" BorderBrush="{x:Null}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Title}" Margin="10,5,10,5" FontFamily="Tw Cen MT" FontSize="24" FontWeight="Bold" Foreground="Black" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock x:Name="TimeTB" TextAlignment="Right" Grid.Column="1" Height="33" Margin="0,25,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="26.667" HorizontalAlignment="Right" Width="79"><Run Language="pl-pl" Text="{Binding Path=TimeEllapsed, Converter={StaticResource IntToTimeConverter},Mode=OneWay}"/></TextBlock>
+        <Rectangle Grid.Row="1" Grid.Column="1" Margin="0" Grid.ColumnSpan="2" Fill="#FF382C2C"/>
+        <ContentControl Content="{Binding CurrentPageViewModel}" Grid.Column="1" Grid.Row="1" Margin="0" Grid.ColumnSpan="2"/>
+        <ListBox x:Name="PlaylistBox" ItemsSource="{Binding Playlists}" Margin="0,198,0,0" Grid.Row="1" BorderBrush="{x:Null}" Background="{x:Null}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,171,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Playlists:" VerticalAlignment="Top" FontFamily="Tw Cen MT Condensed Extra Bold" FontSize="20" FontWeight="Bold" Foreground="Black" Height="22" Width="70"/>
     </Grid>
 </Window>
