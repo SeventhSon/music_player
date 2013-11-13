@@ -11,6 +11,10 @@ namespace Music_Player.Model
     class DirectoryScanner
     {
         private Collection <FileSystemWatcher> FSW;
+
+        /// <summary>
+        /// Class constructor, creating FileSystemWatcher collection
+        /// </summary>
         public DirectoryScanner()
         {
             FSW = new Collection<FileSystemWatcher>();
@@ -63,6 +67,12 @@ namespace Music_Player.Model
             foreach (DirectoryInfo subDirectory in subDirectories)
                 ScanRecursive(subDirectory.FullName,dirId);
         }
+
+        /// <summary>
+        /// Checks if we have access to a given direcctory
+        /// </summary>
+        /// <param name="folderPath">Directory path</param>
+        /// <returns></returns>
         private bool hasAccessToFolder(string folderPath)
         {
             try
@@ -95,6 +105,11 @@ namespace Music_Player.Model
             }
             return builder.ToString();
         }
+
+        /// <summary>
+        /// Rescanning our database, if any changes to directory occured, we are updating or deleting record from database
+        /// </summary>
+        /// <param name="dirs">Directory DataTable</param>
         public void RescanAll(DataTable dirs)
         {
             foreach (DataRow row in dirs.Rows)
@@ -123,6 +138,9 @@ namespace Music_Player.Model
             }
         }
 
+        /// <summary>
+        /// Retrieves directories from database and broadcasts a directory packet
+        /// </summary>
         public void ForceBroadcastDirectories()
         {
             DBManager dbm = DBManager.Instance;
