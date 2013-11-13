@@ -34,6 +34,9 @@ namespace Music_Player.Model
             //throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Retrieves songs from database and broadcasts a SongModel packet
+        /// </summary>
         public void ForceBroadcastSongs()
         {
             DataTable dt = dbm.executeQuery("Select * from songs");

@@ -14,6 +14,10 @@ namespace Music_Player.Model
         private DirectoryScanner directoryScanner;
         private AudioPlayer audioPlayer;
         private InfoScrapper infoScrapper;
+
+        /// <summary>
+        /// MusicPlayer class constructor, creating libraryManager, directoryScanner, audioPlayer and infoScrapper
+        /// </summary>
         private MusicPlayer()
         {
             libraryManager = new LibraryManager();
@@ -21,6 +25,10 @@ namespace Music_Player.Model
             audioPlayer = new AudioPlayer();
             infoScrapper = new InfoScrapper();
         }
+
+        /// <summary>
+        /// Holds the handle to singleton instance
+        /// </summary>
         public static MusicPlayer Instance
         {
             get
@@ -36,6 +44,10 @@ namespace Music_Player.Model
                 return _instance;
             }
         }
+
+        /// <summary>
+        /// Asynchronous
+        /// </summary>
         public void BroadcastNowPlaying()
         {
             Task.Factory.StartNew(() =>
