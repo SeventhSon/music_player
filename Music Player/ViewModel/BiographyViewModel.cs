@@ -16,6 +16,9 @@ namespace Music_Player.ViewModel
         public BiographyViewModel()
         {
         }
+        /// <summary>
+        /// Gets and sets list of biography images
+        /// </summary>
         public List<PhotoModel> Images
         {
             get
@@ -30,6 +33,10 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("Images");
             }
         }
+
+        /// <summary>
+        /// Gets and sets title
+        /// </summary>
         public string Title
         {
             get
@@ -44,6 +51,10 @@ namespace Music_Player.ViewModel
                 RaisePropertyChanged("Title");
             }
         }
+
+        /// <summary>
+        /// Gets and sets description
+        /// </summary>
         public string Description
         {
             get
