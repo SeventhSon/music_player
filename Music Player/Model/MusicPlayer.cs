@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Music_Player.LibraryServiceReference;
+using System.Threading;
 
 namespace Music_Player.Model
 {
@@ -13,12 +14,16 @@ namespace Music_Player.Model
         private static object monitor = new Object();
         private LibraryManager libraryManager;
         private StreamedAudioPlayer audioPlayer;
-        private InfoScrapper infoScrapper;
+        private Thread Worker;
+        private bool running = true;
+        private List<InputEvent> InputQueue;
         private MusicPlayer()
         {
             libraryManager = new LibraryManager();
             audioPlayer = new StreamedAudioPlayer();
-            infoScrapper = new InfoScrapper();
+            InputQueue = new List<InputEvent>();
+            Worker = new Thread(() => Run());
+            Worker.Start();
         }
         public static MusicPlayer Instance
         {
@@ -35,92 +40,82 @@ namespace Music_Player.Model
                 return _instance;
             }
         }
-        public void BroadcastNowPlaying()
+        private void Run()
         {
-            audioPlayer.ForceNowPlayingBroadcast();
-        }
-
-        public void setQueue(List<SongModel> SongList, int selectedIndex)
-        {
-            audioPlayer.SetQueue(SongList, selectedIndex);
-        }
-
-        public void NextSong()
-        {
-            audioPlayer.Next();
-        }
-
-        public void PrevSong()
-        {
-            audioPlayer.Prev();
-        }
-
-        public void PlaySong()
-        {
-            audioPlayer.Play();
-        }
-
-        public void PauseSong()
-        {
-            audioPlayer.Pause();
-        }
-
-        public void ChangeSongVolume(int volume)
-        {
-            audioPlayer.ChangeVolume(volume);
-        }
-
-        public void SeekSong(int timeEllapsed)
-        {
-            audioPlayer.Seek(timeEllapsed);
-        }
-
-        public void BroadcastPlaylists()
-        {
-            Task.Factory.StartNew(() =>
-                {
-                    libraryManager.ForceBroadcastPlaylists();
-                });
-        }
-
-        public void BroadcastInfo()
-        {
-            Task.Factory.StartNew(() =>
-                {
-                    infoScrapper.ForceBroadcastInfo();
-                });
-        }
-
-        public void BroadcastGenres()
-        {
-            Task.Factory.StartNew(() =>
+            while(running)
             {
-                libraryManager.ForceBroadcastGenres();
-            });
-        }
-
-        public void BroadcastAlbums()
-        {
-            Task.Factory.StartNew(() =>
+                List<InputEvent> iq;
+                lock (monitor)
                 {
-                    libraryManager.ForceBroadcastAlbums();
-                });
-        }
-
-        public void BroadcastArtists()
-        {
-            Task.Factory.StartNew(() =>
+                    iq = new List<InputEvent>(InputQueue);
+                    InputQueue.Clear();
+                }
+                for(int i=0;i<iq.Count;i++)
                 {
-                    libraryManager.ForceBroadcastArtists();
-                });
-        }
+                    switch(iq[i].Type)
+                    {
+                        case InputEvent.ActionType.Broadcast:
+                            libraryManager.ForceBroadcastPlaylists();
+                            libraryManager.ForceBroadcastGenres();
+                            libraryManager.ForceBroadcastAlbums();
+                            libraryManager.ForceBroadcastArtists();
+                            libraryManager.ForceBroadcastSongs();
+                            break;
+                        case InputEvent.ActionType.Play:
+                            audioPlayer.Play();
+                            break;
+                        case InputEvent.ActionType.Pause:
+                            audioPlayer.Pause();
+                            break;
+                        case InputEvent.ActionType.Next:
+                            audioPlayer.Next();
+                            break;
+                        case InputEvent.ActionType.Prev:
+                            audioPlayer.Prev();
+                            break;
+                        case InputEvent.ActionType.Seek:
+                            audioPlayer.Seek((float)iq[i].Param);
+                            break;
+                        case InputEvent.ActionType.SetVolume:
+                            audioPlayer.ChangeVolume((int)iq[i].Param);
+                            break;
+                        case InputEvent.ActionType.SetQueue:
+                            audioPlayer.SetQueue((List<SongModel>)iq[i].Param, (int)iq[i].Param2);
+                            break;
+                    }
+                }
 
-        public void BroadcastSongs()
+                Thread.Sleep(250);
+            }
+        }
+        public void addEvent(InputEvent.ActionType type, object param, object param2)
         {
-            Task.Factory.StartNew(() =>
-                {
-                    libraryManager.ForceBroadcastSongs();
-                });
+            InputQueue.Add(new InputEvent(type, param, param2));
+        }
+    }
+    public class InputEvent
+    {
+        public enum ActionType
+        {
+            Pause,
+            Play,
+            SetVolume,
+            Seek,
+            Next,
+            Prev,
+            Broadcast,
+            SetQueue
+        }
+        public ActionType Type { get; set; }
+        public Object Param { get; set; }
+
+        public Object Param2 { get; set; }
+
+        public InputEvent(ActionType type,object param, object param2)
+        {
+            Type = type;
+            Param = param;
+            Param2 = param2;
         }
     }
 }

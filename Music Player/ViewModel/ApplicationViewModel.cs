@@ -73,7 +73,6 @@ namespace Music_Player.ViewModel
 
             //Initialize model
             mp = MusicPlayer.Instance;
-            mp.BroadcastPlaylists();
             
             //Setup the progressTimer for updating the slider
             progressTimer = new DispatcherTimer();
@@ -91,10 +90,12 @@ namespace Music_Player.ViewModel
             NowPlayingTrack = packet.Title.Equals("") ? packet.Path.Split('\\').Last(): packet.Title;
             NowPlayingArtist = packet.Artist;
             NowPlayingAlbum = packet.Album;
+            progressTimer.Stop();
+            IsPlaying = false;
             TimeEllapsed = 0;
-            IsPlaying = true;
-            if (!progressTimer.IsEnabled)
-                progressTimer.Start();
+            //IsPlaying = true;
+            //if (!progressTimer.IsEnabled)
+            //    progressTimer.Start();
         }
         private void ReceiveMessage(List<PlaylistModel> packet)
         {
@@ -120,14 +121,14 @@ namespace Music_Player.ViewModel
         /// </summary>
         private void NextSong()
         {
-            mp.NextSong();
+            mp.addEvent(InputEvent.ActionType.Next,null,null);
         }
         /// <summary>
         /// Play previous song from the play queue
         /// </summary>
         private void PrevSong()
         {
-            mp.PrevSong();
+            mp.addEvent(InputEvent.ActionType.Prev, null, null);
         }
         private void ChangeViewModel(NavigationItemModel nav)
         {
@@ -289,13 +290,13 @@ namespace Music_Player.ViewModel
                 {
                     if(!progressTimer.IsEnabled)
                         progressTimer.Start();
-                    mp.PlaySong();
+                    mp.addEvent(InputEvent.ActionType.Play, null, null);
                 }
                 else
                 {
                     if(progressTimer.IsEnabled)
                         progressTimer.Stop();
-                    mp.PauseSong();
+                    mp.addEvent(InputEvent.ActionType.Pause, null, null);
                 }
             }
         }
@@ -310,7 +311,7 @@ namespace Music_Player.ViewModel
                 if (_volume == value)
                     return;
                 _volume = value;
-                mp.ChangeSongVolume(_volume);
+                mp.addEvent(InputEvent.ActionType.SetVolume, _volume, null);
                 RaisePropertyChanged("Volume");
             }
         }
@@ -348,7 +349,8 @@ namespace Music_Player.ViewModel
                 {
                     //If so change timeEllapsed to new value from slider position and seek
                     TimeEllapsed = (int)((double)_percentagePlayed/1000 * nowPlayingLenght);
-                    mp.SeekSong(TimeEllapsed);
+                    mp.addEvent(InputEvent.ActionType.Seek, (float)_percentagePlayed / 1000, null);
+                    IsPlaying = false;
                 }
             }
         }

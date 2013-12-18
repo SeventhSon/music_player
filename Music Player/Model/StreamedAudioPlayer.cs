@@ -8,6 +8,8 @@ using Music_Player.LibraryServiceReference;
 using System.IO;
 using System.Threading;
 using Music_Player.Messaging;
+using System.Windows.Threading;
+using Music_Player.ViewModel;
 
 namespace Music_Player.Model
 {
@@ -20,16 +22,19 @@ namespace Music_Player.Model
             Buffering,
             Paused
         }
+
         private LibraryServiceClient lsc;
         private BufferedWaveProvider bufferedWaveProvider;
         private IWavePlayer waveOut;
         private volatile StreamingPlaybackState playbackState;
         private volatile bool fullyDownloaded;
         private VolumeWaveProvider16 volumeProvider;
+        private Thread StreamReader;
+        private DispatcherTimer timer;
+        
         private List<SongModel> queue;
         private int index = -1;
         private float Volume = 0.75f;
-        private Thread StreamReader;
 
         private bool IsBufferNearlyFull
         {
@@ -45,6 +50,11 @@ namespace Music_Player.Model
         {
             lsc = new LibraryServiceClient();
             StreamReader = null;
+            waveOut = new WaveOut();
+            waveOut.PlaybackStopped += OnPlaybackStopped;
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(350);
+            timer.Tick += TimerTick;
         }
         public void ChangeVolume(int volume)
         {
@@ -54,14 +64,20 @@ namespace Music_Player.Model
         }
         public void Play()
         {
-            waveOut.Play();
-            playbackState = StreamingPlaybackState.Playing;
+            if (bufferedWaveProvider != null)
+            {
+                waveOut.Play();
+                playbackState = StreamingPlaybackState.Playing;
+            }
         }
 
         public void Pause()
         {
-            playbackState = StreamingPlaybackState.Buffering;
-            waveOut.Pause();
+            if (bufferedWaveProvider != null)
+            {
+                playbackState = StreamingPlaybackState.Buffering;
+                waveOut.Pause();
+            }
         }
         public void Seek(float percentage)
         {
@@ -72,12 +88,25 @@ namespace Music_Player.Model
         }
         public void Next()
         {
-            waveOut.Stop();
+            if (bufferedWaveProvider != null)
+            {
+                Index++;
+                stopCurrentDownload();
+                playbackState = StreamingPlaybackState.Buffering;
+                StreamReader = new Thread(() => readMP3FromStream(queue[Index].Path, 0f));
+                StreamReader.Start();
+            }
         }
         public void Prev()
         {
-            Index -= 2;
-            waveOut.Stop();
+            if (bufferedWaveProvider != null)
+            {
+                Index--;
+                stopCurrentDownload();
+                playbackState = StreamingPlaybackState.Buffering;
+                StreamReader = new Thread(() => readMP3FromStream(queue[Index].Path, 0f));
+                StreamReader.Start();
+            }
         }
         public void SetQueue(List<SongModel> q, int i)
         {
@@ -95,6 +124,9 @@ namespace Music_Player.Model
             {
                 playbackState = StreamingPlaybackState.Stopped;
                 StreamReader.Join();
+                waveOut.Stop();
+                bufferedWaveProvider = null;
+                timer.Stop();
             }
         }
         public int Index
@@ -108,6 +140,7 @@ namespace Music_Player.Model
                 }
                 else if (value * -1 < queue.Count)
                     index = queue.Count - value;
+                ForceNowPlayingBroadcast();
             }
         }
         public void ForceNowPlayingBroadcast()
@@ -148,6 +181,11 @@ namespace Music_Player.Model
                                 // reached the end of the MP3 file / stream
                                 break;
                             }
+                            if (frame == null)
+                            {
+                                fullyDownloaded = true;
+                                break;
+                            }
                             if (decompressor == null)
                             {
                                 // don't think these details matter too much - just help ACM select the right codec
@@ -179,12 +217,10 @@ namespace Music_Player.Model
 
         private void createWaveOut()
         {
-            waveOut = new WaveOut();
-            waveOut.PlaybackStopped += OnPlaybackStopped;
             volumeProvider = new VolumeWaveProvider16(bufferedWaveProvider);
             volumeProvider.Volume = Volume;
             waveOut.Init(volumeProvider);
-            ForceNowPlayingBroadcast();
+            timer.Start();
         }
         private static IMp3FrameDecompressor CreateFrameDecompressor(Mp3Frame frame)
         {
@@ -194,9 +230,34 @@ namespace Music_Player.Model
         }
         private void OnPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            playbackState = StreamingPlaybackState.Buffering;
-            StreamReader = new Thread(() => readMP3FromStream(queue[++Index].Path, 0f));
-            StreamReader.Start();
+            //playbackState = StreamingPlaybackState.Buffering;
+            //StreamReader = new Thread(() => readMP3FromStream(queue[++Index].Path, 0f));
+            //StreamReader.Start();
+        }
+        private void TimerTick(object sender, EventArgs e)
+        {
+            ViewModelLocator vm = new ViewModelLocator();
+            if (playbackState != StreamingPlaybackState.Stopped)
+            {
+                if (bufferedWaveProvider != null)
+                {
+                    var bufferedSeconds = bufferedWaveProvider.BufferedDuration.TotalSeconds;
+                    if (bufferedSeconds < 0.5 && playbackState == StreamingPlaybackState.Playing && !fullyDownloaded)
+                    {
+                        
+                        vm.Application.IsPlaying = false;
+                    }
+                    else if (bufferedSeconds > 4 && playbackState == StreamingPlaybackState.Buffering)
+                    {
+                        vm.Application.IsPlaying = true;
+                    }
+                    else if (fullyDownloaded && bufferedSeconds == 0)
+                    {
+                        Next();
+                    }
+                }
+
+            }
         }
     }
 }

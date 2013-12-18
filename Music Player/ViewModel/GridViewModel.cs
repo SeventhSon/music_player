@@ -29,7 +29,7 @@ namespace Music_Player.ViewModel
                  this,
                  (action) => ReceiveMessage(action)
             );
-            MusicPlayer.Instance.BroadcastSongs();
+            MusicPlayer.Instance.addEvent(InputEvent.ActionType.Broadcast, null, null);
         }
         private void ReceiveMessage(List<SongModel> packet)
         {
@@ -54,10 +54,11 @@ namespace Music_Player.ViewModel
         {
             Task.Factory.StartNew(() =>
                 {
+                    if (selectedIndex < 0) return;
                     foreach (SongModel sm in SongList)
                         sm.NowPlaying = false;
                     SongList[selectedIndex].NowPlaying = true;
-                    MusicPlayer.Instance.setQueue(SongList, selectedIndex);
+                    MusicPlayer.Instance.addEvent(InputEvent.ActionType.SetQueue, SongList, selectedIndex);
                 });
         }
 

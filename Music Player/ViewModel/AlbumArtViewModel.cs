@@ -27,7 +27,6 @@ namespace Music_Player.ViewModel
             );
             defaultImg = new BitmapImage(new Uri("/Images/albumart.jpg", UriKind.Relative));
             AlbumArtImg = defaultImg;
-            MusicPlayer.Instance.BroadcastNowPlaying();
         }
         public BitmapImage AlbumArtImg
         {

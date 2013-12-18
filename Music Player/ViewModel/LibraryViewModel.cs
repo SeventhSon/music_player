@@ -37,11 +37,6 @@ namespace Music_Player.ViewModel
             CurrentViewModel = _viewModels[0];
             SongsSelected = true;
 
-            MusicPlayer.Instance.BroadcastSongs();
-            MusicPlayer.Instance.BroadcastAlbums();
-            MusicPlayer.Instance.BroadcastArtists();
-            MusicPlayer.Instance.BroadcastGenres();
-
         }
         public ViewModelBase CurrentViewModel
         {
