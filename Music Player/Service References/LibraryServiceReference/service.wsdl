@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="LibraryService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_ILibraryService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256>
+                </sp:Basic256>
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict>
+                </sp:Strict>
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <msf:Streamed xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+        </msf:Streamed>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/Message" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ILibraryService_dummy_InputMessage">
+    <wsdl:part name="parameters" element="tns:dummy" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_dummy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:dummyResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongs_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongs" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongs_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongsByGenre_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongsByGenre" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongsByGenre_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongsByGenreResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongsByAlbum_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongsByAlbum" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongsByAlbum_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongsByAlbumResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongStream" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetSongStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSongStreamResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetAlbumArtStream_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAlbumArtStream" />
+  </wsdl:message>
+  <wsdl:message name="ILibraryService_GetAlbumArtStream_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAlbumArtStreamResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ILibraryService">
+    <wsdl:operation name="dummy">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/dummy" message="tns:ILibraryService_dummy_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/dummyResponse" message="tns:ILibraryService_dummy_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSongs">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/GetSongs" message="tns:ILibraryService_GetSongs_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/GetSongsResponse" message="tns:ILibraryService_GetSongs_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSongsByGenre">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/GetSongsByGenre" message="tns:ILibraryService_GetSongsByGenre_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/GetSongsByGenreResponse" message="tns:ILibraryService_GetSongsByGenre_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSongsByAlbum">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/GetSongsByAlbum" message="tns:ILibraryService_GetSongsByAlbum_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/GetSongsByAlbumResponse" message="tns:ILibraryService_GetSongsByAlbum_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSongStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/GetSongStream" message="tns:ILibraryService_GetSongStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/GetSongStreamResponse" message="tns:ILibraryService_GetSongStream_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAlbumArtStream">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILibraryService/GetAlbumArtStream" message="tns:ILibraryService_GetAlbumArtStream_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILibraryService/GetAlbumArtStreamResponse" message="tns:ILibraryService_GetAlbumArtStream_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_ILibraryService" type="tns:ILibraryService">
+    <wsp:PolicyReference URI="#NetTcpBinding_ILibraryService_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="dummy">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/dummy" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSongs">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/GetSongs" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSongsByGenre">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/GetSongsByGenre" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSongsByAlbum">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/GetSongsByAlbum" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSongStream">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/GetSongStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAlbumArtStream">
+      <soap12:operation soapAction="http://tempuri.org/ILibraryService/GetAlbumArtStream" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LibraryService">
+    <wsdl:port name="NetTcpBinding_ILibraryService" binding="tns:NetTcpBinding_ILibraryService">
+      <soap12:address location="net.tcp://localhost:8523/LibraryServiceLib/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:8523/LibraryServiceLib/</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>localhost</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

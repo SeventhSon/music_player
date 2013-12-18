@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/Message" />
+  <xs:element name="dummy">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="dummyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="dummyResult" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongs">
+    <xs:complexType />
+  </xs:element>
+  <xs:element name="GetSongsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="GetSongsResult" type="tns:ArrayOfSongModel" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="ArrayOfSongModel">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SongModel" nillable="true" type="tns:SongModel" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SongModel">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Title" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Artist" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Album" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Year" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Genre" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Length" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="1" name="LengthString" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Path" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Rating" type="xs:int" />
+      <xs:element minOccurs="1" maxOccurs="1" name="DirectoryID" type="xs:int" />
+      <xs:element minOccurs="1" maxOccurs="1" name="TrackNo" type="xs:int" />
+      <xs:element minOccurs="1" maxOccurs="1" name="NowPlaying" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="GetSongsByGenre">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="genre" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongsByGenreResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="GetSongsByGenreResult" type="tns:ArrayOfSongModel" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongsByAlbum">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="album" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongsByAlbumResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="GetSongsByAlbumResult" type="tns:ArrayOfSongModel" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="path" type="xs:string" />
+        <xs:element minOccurs="1" maxOccurs="1" name="offsetPercentage" type="xs:float" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSongStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/Message" name="GetSongStreamResult" type="q1:StreamBody" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAlbumArtStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="path" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAlbumArtStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/Message" name="GetAlbumArtStreamResult" type="q2:StreamBody" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

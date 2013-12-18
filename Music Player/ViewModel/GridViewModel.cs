@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Music_Player.LibraryServiceReference;
 
 namespace Music_Player.ViewModel
 {
@@ -85,23 +86,6 @@ namespace Music_Player.ViewModel
 
                 return _playCommand;
             }
-        }
-        public RelayCommand<SongModel> SaveCommand
-        {
-            get
-            {
-                if (_saveCommand == null)
-                {
-                    _saveCommand = new RelayCommand<SongModel>(selectedItem => SaveSongs(selectedItem));
-                }
-
-                return _saveCommand;
-            }
-        }
-
-        private void SaveSongs(SongModel selectedItem)
-        {
-            MusicPlayer.Instance.SaveSong(selectedItem);
         }
     }
 }

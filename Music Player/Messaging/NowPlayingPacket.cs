@@ -1,4 +1,5 @@
-﻿using Music_Player.Model;
+﻿using Music_Player.LibraryServiceReference;
+using Music_Player.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,7 +35,7 @@ namespace Music_Player.Messaging
             {
                 defaultImg = new BitmapImage();
                 defaultImg.BeginInit();
-                defaultImg.UriSource = new Uri("./Images/albumart.jpg", UriKind.Relative);
+                defaultImg.UriSource = new Uri("./Images/album-art-missing.png", UriKind.Relative);
                 defaultImg.CacheOption = BitmapCacheOption.OnLoad;
                 defaultImg.EndInit();
                 defaultImg.Freeze();

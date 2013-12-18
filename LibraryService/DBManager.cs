@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Data;
 using System.Data.SQLite;
-using System.Windows;
 
-namespace Music_Player.Model
+namespace LibraryServiceLib
 {
     public sealed class DBManager
     {
@@ -26,7 +25,7 @@ namespace Music_Player.Model
             if(!File.Exists(DBFile))
             {
                 Console.WriteLine("DB is nonexistent. Creating DB from sql!");
-                SQLiteConnection.CreateFile(AppDomain.CurrentDomain.BaseDirectory + "\\DB\\musiclibrary.sqlite");
+                SQLiteConnection.CreateFile(DBFile);
                 DBConnectionLink = "Data Source="+DBFile+";Version=3;";
                 int ra = ExecuteScript(AppDomain.CurrentDomain.BaseDirectory+"\\DB\\musicplayer.sql");
                 if (ra == -1)
@@ -59,7 +58,7 @@ namespace Music_Player.Model
         /// <returns>DataTable with results of the query</returns>
         public DataTable ExecuteQuery(string SQL)
         {
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable("result");
             try
             {
                 using (SQLiteConnection DBConnection = new SQLiteConnection(DBConnectionLink))
@@ -74,7 +73,6 @@ namespace Music_Player.Model
             }
             catch (SQLiteException e)
             {
-                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL Query");
                 Console.WriteLine(SQL);
             }
             return dt;
@@ -99,7 +97,6 @@ namespace Music_Player.Model
             }
             catch (SQLiteException e)
             {
-                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n Check console for SQL Query");
                 Console.WriteLine(SQL);
             }
             return RowsAffected;
@@ -138,7 +135,7 @@ namespace Music_Player.Model
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message + "\n" + e.StackTrace + "\n" + e.GetType());
+                Console.WriteLine(e.Message + "\n" + e.StackTrace + "\n" + e.GetType());
             }
             return RowsAffected;
         }

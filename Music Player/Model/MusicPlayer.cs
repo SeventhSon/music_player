@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Music_Player.LibraryServiceReference;
 
 namespace Music_Player.Model
 {
@@ -11,14 +12,12 @@ namespace Music_Player.Model
         private static volatile MusicPlayer _instance;
         private static object monitor = new Object();
         private LibraryManager libraryManager;
-        private DirectoryScanner directoryScanner;
-        private AudioPlayer audioPlayer;
+        private StreamedAudioPlayer audioPlayer;
         private InfoScrapper infoScrapper;
         private MusicPlayer()
         {
             libraryManager = new LibraryManager();
-            directoryScanner = new DirectoryScanner();
-            audioPlayer = new AudioPlayer();
+            audioPlayer = new StreamedAudioPlayer();
             infoScrapper = new InfoScrapper();
         }
         public static MusicPlayer Instance
@@ -38,58 +37,37 @@ namespace Music_Player.Model
         }
         public void BroadcastNowPlaying()
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.ForceNowPlayingBroadcast();
-                });
+            audioPlayer.ForceNowPlayingBroadcast();
         }
 
         public void setQueue(List<SongModel> SongList, int selectedIndex)
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.SetQueue(SongList, selectedIndex);
-                });
+            audioPlayer.SetQueue(SongList, selectedIndex);
         }
 
         public void NextSong()
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.Next();
-                });
+            audioPlayer.Next();
         }
 
         public void PrevSong()
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.Prev();
-                });
+            audioPlayer.Prev();
         }
 
         public void PlaySong()
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.Play();
-                });
+            audioPlayer.Play();
         }
 
         public void PauseSong()
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.Pause();
-                });
+            audioPlayer.Pause();
         }
 
         public void ChangeSongVolume(int volume)
         {
-            Task.Factory.StartNew(() =>
-                {
-                    audioPlayer.ChangeVolume(volume);
-                });
+            audioPlayer.ChangeVolume(volume);
         }
 
         public void SeekSong(int timeEllapsed)
@@ -111,17 +89,6 @@ namespace Music_Player.Model
                 {
                     infoScrapper.ForceBroadcastInfo();
                 });
-        }
-
-        public void ScanDirectory(string p)
-        {
-            Task.Factory.StartNew(() =>
-                {
-                    directoryScanner.ScanRecursive(p);
-                    directoryScanner.ForceBroadcastDirectories();
-                    libraryManager.ForceBroadcastSongs();
-                });
-
         }
 
         public void BroadcastGenres()
@@ -153,24 +120,6 @@ namespace Music_Player.Model
             Task.Factory.StartNew(() =>
                 {
                     libraryManager.ForceBroadcastSongs();
-                });
-        }
-
-        public void BroadcastDirectories()
-        {
-            Task.Factory.StartNew(() =>
-                {
-                    directoryScanner.ForceBroadcastDirectories();
-                });
-        }
-
-        public void SaveSong(SongModel selectedItem)
-        {
-            Task.Factory.StartNew(() =>
-                {
-                    List<SongModel> list = new List<SongModel>();
-                    list.Add(selectedItem);
-                    libraryManager.SaveSongData(list);
                 });
         }
     }

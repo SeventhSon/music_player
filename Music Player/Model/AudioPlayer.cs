@@ -13,6 +13,7 @@ using System.Collections;
 using Music_Player.Messaging;
 using System.Drawing;
 using System.Windows.Media.Imaging;
+using Music_Player.LibraryServiceReference;
 
 namespace Music_Player.Model
 {

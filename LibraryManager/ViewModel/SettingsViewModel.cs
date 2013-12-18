@@ -1,10 +1,10 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Music_Player.Model;
+using LibraryManager.Model;
 using System.Collections.Generic;
 
-namespace Music_Player.ViewModel
+namespace LibraryManager.ViewModel
 {
     /// <summary>
     /// This class contains properties that the main View can data bind to.
@@ -31,7 +31,7 @@ namespace Music_Player.ViewModel
                  this,
                  (action) => ReceiveMessage(action)
             );
-            MusicPlayer.Instance.BroadcastDirectories();
+            //Request directories
         }
         /// <summary>
         /// Opens directory browser dialog and scans recursively selected directory
@@ -41,7 +41,7 @@ namespace Music_Player.ViewModel
             var dialog = new System.Windows.Forms.FolderBrowserDialog();
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                MusicPlayer.Instance.ScanDirectory(dialog.SelectedPath);
+                //Request directory scan
             }
         }
         public RelayCommand AddCommand
@@ -80,9 +80,7 @@ namespace Music_Player.ViewModel
                     dbm.ExecuteNonQuery("Delete from directories where id="+dm.Id);
                 }
             }
-            MusicPlayer.Instance.BroadcastDirectories();
-            MusicPlayer.Instance.BroadcastSongs();
-            MusicPlayer.Instance.BroadcastAlbums();
+            //TODO request directories
         }
         public List<DirectoryModel> Directories
         {

@@ -9,6 +9,8 @@ using Music_Player.ViewModel;
 using System.IO;
 using Music_Player.Messaging;
 using System.Threading;
+using System.Windows;
+using Music_Player.LibraryServiceReference;
 
 namespace Music_Player.Model
 {
@@ -19,11 +21,11 @@ namespace Music_Player.Model
         /// </summary>
         /// 
         private object filelock = new Object();
-        private DBManager dbm;
+        private LibraryServiceClient lsc;
         private string nowPlayingPath ="";
         public LibraryManager()
         {
-            dbm = DBManager.Instance;
+            lsc = new LibraryServiceClient();
         }
 
         public void ForceBroadcastPlaylists()
@@ -38,16 +40,7 @@ namespace Music_Player.Model
 
         public void ForceBroadcastSongs()
         {
-            DataTable dt = dbm.ExecuteQuery("Select * from songs");
-            List<SongModel> packet = new List<SongModel>();
-            foreach (DataRow row in dt.Rows)
-            {
-                SongModel song = new SongModel(row);
-                if(song.Path.Equals(nowPlayingPath))
-                    song.NowPlaying = true;
-                packet.Add(song);
-            }
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<List<SongModel>>(packet);    
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send<List<SongModel>>(lsc.GetSongs());    
         }
 
         public void ForceBroadcastArtists()
@@ -58,32 +51,6 @@ namespace Music_Player.Model
         public void ForceBroadcastAlbums()
         {
             //throw new NotImplementedException();
-        }
-        public void SaveSongData(List<SongModel> SongsToSave)
-        {
-                foreach (SongModel song in SongsToSave)
-                {
-                    string update = "";
-                    update += "title=\"" + song.Title + "\", album=\"" + song.Album + "\", artist=\"" + song.Artist +
-                        "\", year=" + song.Year + ", genre=\"" + song.Genre + "\", rating=" + song.Rating + " where path=\"" + song.Path + "\"";
-                    dbm.ExecuteNonQuery("update or replace songs  set " + update);
-                    TagLib.File tags = TagLib.File.Create(song.Path);
-                    tags.Tag.Album = song.Album;
-                    tags.Tag.AlbumArtists = song.Artist.Split(',');
-                    tags.Tag.Title = song.Title;
-                    tags.Tag.Year = (uint)song.Year;
-                    tags.Tag.Genres = song.Genre.Split(',');
-                    try
-                    {
-                        tags.Save();
-                    }catch(System.IO.IOException e)
-                    {
-                        Thread.Sleep(1000);
-                        SaveSongData(SongsToSave);
-                    }
-
-                }
-                ForceBroadcastSongs();
         }
         private void ReceiveMessage(NowPlayingPacket packet)
         {

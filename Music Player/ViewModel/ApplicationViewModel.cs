@@ -53,7 +53,6 @@ namespace Music_Player.ViewModel
             //Adding navigation items and their associated viewModels
             Navigation.Add(new NavigationItemModel(new NowPlayingViewModel(),"Now Playing"));
             Navigation.Add(new NavigationItemModel(new LibraryViewModel(),"Library"));
-            Navigation.Add(new NavigationItemModel(new SettingsViewModel(),"Settings"));
 
             //Set the starting page to LibraryView and select it
             ChangeViewModel(Navigation[1]);

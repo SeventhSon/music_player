@@ -44,7 +44,7 @@ namespace Music_Player.ViewModel
 
             SimpleIoc.Default.Register<ApplicationViewModel>();
             SimpleIoc.Default.Register<NowPlayingViewModel>();
-            SimpleIoc.Default.Register<SettingsViewModel>();
+            
             SimpleIoc.Default.Register<LibraryViewModel>();
 
             SimpleIoc.Default.Register<AlbumArtViewModel>();
@@ -60,13 +60,6 @@ namespace Music_Player.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<ApplicationViewModel>();
-            }
-        }
-        public SettingsViewModel Settings
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<SettingsViewModel>();
             }
         }
         public NowPlayingViewModel NowPlaying

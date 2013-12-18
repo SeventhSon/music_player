@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2A850C48-72B4-44BF-992D-632D0D3BFBDB}</ProjectGuid>
+    <ProjectGuid>{2068DD79-9F67-4E1B-B275-40159A977370}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Music_Player</RootNamespace>
-    <AssemblyName>Music Player</AssemblyName>
+    <RootNamespace>LibraryManager</RootNamespace>
+    <AssemblyName>LibraryManager</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -45,20 +44,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.WPF45.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Expression.Drawing" />
-    <Reference Include="Microsoft.Expression.Effects" />
-    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\packages\NAudio.1.7\lib\net35\NAudio.dll</HintPath>
-    </Reference>
     <Reference Include="policy.2.0.taglib-sharp">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.89.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -68,9 +60,6 @@
     <Reference Include="System.Data.SQLite.Linq">
       <HintPath>..\packages\System.Data.SQLite.1.0.89.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -95,104 +84,38 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Messaging\InfoPacket.cs" />
-    <Compile Include="Messaging\NowPlayingPacket.cs" />
     <Compile Include="Model\DataGridValidators.cs" />
-    <Compile Include="Model\InfoScrapper.cs" />
-    <Compile Include="Model\LibraryManager.cs" />
-    <Compile Include="Model\AudioPlayer.cs" />
-    <Compile Include="Model\IntToTimeConverter.cs" />
-    <Compile Include="Model\MusicPlayer.cs" />
-    <Compile Include="Model\PhotoModel.cs" />
-    <Compile Include="Model\ReadFullyStream.cs" />
-    <Compile Include="Model\StreamedAudioPlayer.cs" />
-    <Compile Include="Service References\LibraryServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModel\BiographyViewModel.cs" />
+    <Compile Include="Model\DBManager.cs" />
+    <Compile Include="Model\DirectoryModel.cs" />
     <Compile Include="ViewModel\GridViewModel.cs" />
-    <Compile Include="ViewModel\LyricsViewModel.cs" />
-    <Compile Include="ViewModel\AlbumArtViewModel.cs" />
-    <Compile Include="ViewModel\NavigationItemModel.cs" />
-    <Compile Include="ViewModel\PlaylistItemHeaderModel.cs" />
-    <Compile Include="ViewModel\PlaylistModel.cs" />
-    <Compile Include="ViewModel\NowPlayingViewModel.cs" />
-    <Compile Include="ViewModel\LibraryViewModel.cs" />
-    <Compile Include="ViewModel\ApplicationViewModel.cs" />
-    <Compile Include="ViewModel\TileViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\AlbumArtView.xaml.cs">
-      <DependentUpon>AlbumArtView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ApplicationView.xaml.cs">
-      <DependentUpon>ApplicationView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\BiographyView.xaml.cs">
-      <DependentUpon>BiographyView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\GridView.xaml.cs">
       <DependentUpon>GridView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\LibraryView.xaml.cs">
-      <DependentUpon>LibraryView.xaml</DependentUpon>
+    <Compile Include="View\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\LyricsView.xaml.cs">
-      <DependentUpon>LyricsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\NowPlayingView.xaml.cs">
-      <DependentUpon>NowPlayingView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Player.xaml.cs">
-      <DependentUpon>Player.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\TileView.xaml.cs">
-      <DependentUpon>TileView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="View\AlbumArtView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\ApplicationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\BiographyView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\GridView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\LibraryView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LyricsView.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MusicPlayerStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\NowPlayingView.xaml">
-      <SubType>Designer</SubType>
+    <Compile Include="View\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="View\SettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Player.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\TileView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -212,60 +135,34 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Service References\LibraryServiceReference\Message.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\LibraryServiceReference\Music_Player.LibraryServiceReference.SongModel.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\LibraryServiceReference\service.wsdl" />
-    <None Include="Service References\LibraryServiceReference\service.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Images\album-art-missing.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\nowplayingicon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="Service References\LibraryServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\LibraryServiceReference\configuration.svcinfo" />
-    <None Include="Service References\LibraryServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <Content Include="x64\SQLite.Interop.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\SQLite.Interop.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\LibraryServiceReference\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibraryService\LibraryServiceLib.csproj">
       <Project>{0baa2bd4-ad8f-4942-941a-86f5a92932c1}</Project>
       <Name>LibraryServiceLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Music Player\Music Player.csproj">
+      <Project>{2a850c48-72b4-44bf-992d-632d0d3bfbdb}</Project>
+      <Name>Music Player</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

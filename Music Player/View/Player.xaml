@@ -1,15 +1,11 @@
-﻿<UserControl x:Class="Music_Player.View.AlbumArtView"
+﻿<UserControl x:Class="Music_Player.View.Player"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             DataContext="{Binding Source={StaticResource Locator}, Path=AlbumArt}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <BitmapImage x:Key="Missing" UriSource="../Images/album-art-missing.png" />
-    </UserControl.Resources>
     <Grid>
-        <Image x:Name="AlbumArtImg" Source="{Binding AlbumArtImg}" Margin="10"/>
+            
     </Grid>
 </UserControl>
